@@ -1,0 +1,29 @@
+1.93:
+ - removed bcisubsample-function
+ - documentations are now acceptable
+ 
+1.92:
+ - added the pp modifiers from art2data
+1.91:
+ - corrected the Shannon calculation, does not discard types as targets but only 
+   as sources
+1.9:
+ - removed calculating over the empty types (!included) from Simpson and Shannon.
+1.8:
+ - workaround for the 'markformat(x)==none' point pattern problem
+ 
+1.7:
+ - added the weighted mean to mingling and ISAR
+1.6: 
+ - bug fixes in print (shannon note)
+1.5:
+ - clean up overall
+ - write more documentation
+ - ready for CRAN
+1.4:
+ - clean up the functions to more generic form
+ - write documentation
+ - general cleaning of code, fix warnings "comparing int...unsigned int..."
+1.3:
+ - added function class fcl for plotting
+ - added poisson values to the returned values for comparison
