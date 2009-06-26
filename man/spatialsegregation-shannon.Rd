@@ -12,13 +12,13 @@ Compute the spatial and aspatial Shannon index for a given multitype point patte
 
 \details{
   \tabular{ll}{
-    Date: \tab 2009-03-09\cr
+    Date: \tab 2009-03-24\cr
     License: \tab GPL v2 or later\cr
   }
 
-The form of Shannon index is  \code{$H = 1 - E(o)/E(N)$, where $E(N)$} is the global entropy and \code{$E(o)$} is the local entropy 
-calculated as \code{$E(o)= - \sum \pi\_\tau log(\pi\_\tau)$}, where the sum is over the types of the pattern, and \code{$\pi\_\tau$} is 
-the expected relative frequency of type \code{$\tau$} points in a neighbourhood of a typical point of the pattern. 
+The form of Shannon index is  \var{H = 1 - E(o)/E(N)}, where \var{E(N)} is the global entropy and \var{E(o)} is the local entropy 
+calculated as \var{E(o)= - sum pi_tau log(pi_tau)}, where the sum is over the types of the pattern, and \var{pi_tau} is 
+the expected relative frequency of type \var{tau} points in a neighbourhood of a typical point of the pattern. 
 
 The function \code{shannonF} is the main calculation function. Uses function \code{\link{segregationFun}} with parameter \code{ftype=2}. 
 
@@ -26,7 +26,7 @@ The function \code{shannon_index} is a shortcut to get a single value for the pa
 }
 
 \usage{
-  shannonF(pp, parvec = 1:20, graph_type = "knn", ...)
+  shannonF(pp, parvec = 1:20, graph_type = "knn", v2=FALSE, ...)
   shannon_index(pp, graph_type = "knn", graph_par = 4, spatial = TRUE, ...)
 }
 
@@ -36,6 +36,7 @@ The function \code{shannon_index} is a shortcut to get a single value for the pa
 \item{graph_type}{Default \code{knn}. Type of the neighbourhood graph. Accepts: \code{knn}, \code{geometric}, \code{delauney}, \code{gabriel}.}
 \item{graph_par}{The single parameter to calculate the value in.}
 \item{spatial}{If FALSE, return the classical aspatial index value.}
+\item{v2}{If TRUE, use the real number of types in neighbourhoods as the log-base instead of total population type count.}
 \item{...}{Further tuning parametes for the function segregationFun.}
 }
 

@@ -3,8 +3,8 @@
 #include <Rinternals.h>
 #include <math.h>
 #include <vector>
-#include "dists.h"
 #include "Pp.h"
+#include "other.h"
 
 #ifndef GRAPH_H_
 #define GRAPH_H_
@@ -22,12 +22,9 @@ public:
 	int    *dbg;
 	double *prepR;
 	int    *gtype;
+	int    *prepDone, pdone;
 	std::vector<std::vector<int> > nodelist;
-	std::vector<double> distTriangle;
-	std::vector<double> * pdists;
-	double (Graph::*Dist)(int*, int*);
-	double Dist1(int*, int*);
-	double Dist2(int*, int*);
+	double Dist(int *, int *);
 	Graph();
 	virtual ~Graph();
 

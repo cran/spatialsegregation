@@ -1,3 +1,27 @@
+2.05:
+ - fix CRAN compilation errors 
+ 
+2.04:
+ - changed the k-nn graph so that if some nodes don't have enough precalculated neighbours (n<k) it skip the node, not the whole pattern
+2.03:
+ - fixed the prepGraph-problem
+2.02:
+ - fixed the geometric graph bug when a prepR was not given
+ 
+2.01:
+ - added possibility to use prepGraph directly for calculation
+ 
+2.00:
+ - added dependecy of spatstat
+ - added degree-weighted isar
+ 
+1.96:
+ - fixed the nonfunctioning prepGraph-problem
+1.95:
+ - added the shannon v2, which uses the real typecount in the neighbourhoods as the log base instead of always S
+1.94:
+ - removed dependence of 'spatgraphs'
+ 
 1.93:
  - removed bcisubsample-function
  - documentations are now acceptable

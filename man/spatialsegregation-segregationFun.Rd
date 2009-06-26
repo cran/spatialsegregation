@@ -5,6 +5,7 @@
 \alias{print.segfcl} 
 \alias{segfcl}
 \alias{spatialsegregation_function_explanations}
+\alias{sg_modify_pp}
 \docType{package}
 
 \title{Spatial Segregation Function}
@@ -17,8 +18,8 @@ shortcuts \code{minglingF}, \code{isarF}, \code{shannonF} and \code{simpsonF} hi
 \usage{
      segregationFun(pp, fpar = NULL, graph_parvec = 1:20, graph_type = "knn",
     toroidal = FALSE, dbg = FALSE, funtype = 1, doDists = FALSE,
-    prepR = 0, prepGraph = NULL, included = NULL, minusR = NULL,
-    relative = FALSE)
+    prepR = 0, prepGraph = NULL, prepGraphIsTarget=FALSE, included = NULL, 
+    minusR = NULL, relative = FALSE)
 }
 
 \arguments{
@@ -33,6 +34,7 @@ shortcuts \code{minglingF}, \code{isarF}, \code{shannonF} and \code{simpsonF} hi
 \item{prepR}{Default 0. If >0, shrink the search space for connections in the graph by searching only points within distance R (precalculates geometric graph).}
 \item{prepGraph}{Precalculated graph for the point pattern. If not NULL, The graph\_par, graph\_parvec, toroidal and prepR are ignored and calculations are carried 
       using only prepGraph. Useful for huge datasets.}
+\item{prepGraphIsTarget}{If TRUE, precalculated graph 'prepGraph' is used to calculate the function value directly.}
 \item{included}{boolean-vector of length |pp|. included[i]==TRUE => pp[i] included in calculations. See the next parameter for quick minus-sampling.}
 \item{minusR}{If given included-vector is created with points with distance atleast minusR from the border.}
 \item{relative}{Default FALSE. If TRUE, scale the parvec to a unit distance using intensity. Only for "geometric" graph. Useful for comparison of different scale pp's.}

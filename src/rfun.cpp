@@ -19,7 +19,7 @@ SEXP fun_c(SEXP Args)
 	Graph graph;
 	Fun fun;
 	double *prepR, *fpar, *par, *parvec;
-	int *gtype, *doDists, *toroidal, *ftype, *dbg, parn, *incl, prepG=0;
+	int *gtype, *doDists, *toroidal, *ftype, *dbg, parn, *incl, prepG=0, *prepGraphIsTarget;
 	SEXP prepGraph;
 
 //start parsing the args
@@ -55,7 +55,6 @@ SEXP fun_c(SEXP Args)
 	Args = CDR(Args);
 	prepR = REAL(CAR(Args)); // if preprocessing R given
 
-
 	if(*dbg)printf(".");
 	Args = CDR(Args);
 	doDists = INTEGER(CAR(Args)); // if the distances are precalculated and stored
@@ -69,6 +68,11 @@ SEXP fun_c(SEXP Args)
 	prepGraph = CAR(Args); // possibly precalculated graph
 	prepG = 1- INTEGER(getListElement(prepGraph,"isnull"))[0];
 
+	if(*dbg)printf(".");
+	Args = CDR(Args);
+	prepGraphIsTarget = INTEGER(CAR(Args)); // use only the precalculated graph to get a value
+
+
 	if(*dbg)printf("done.\n");
 	par = &parvec[parn-1];
 
@@ -76,14 +80,16 @@ SEXP fun_c(SEXP Args)
 
 	//	void Init(Pp *pp0, double *par, double *prepR, int *doDists, int *toroidal, int *dbg );
 	if(*dbg)printf("Init graph...");
-	graph.Init(&pp, gtype, par, prepR, doDists, toroidal, dbg);
-	if(prepG)// if precalculated graph, set the edges
+	graph.Init(&pp, gtype, par, prepR , doDists, toroidal, dbg);
+	if(prepG)// if precalculated graph, set the edges, overrule the prepR-parameter
 	{
 		if(*dbg)printf("loading precalculated edges...");
 		std::vector<std::vector<int> > prepNodelist;
 		VectsxpToVector(getListElement(prepGraph,"edges"), prepNodelist);
 		graph.setNodelist(&prepNodelist);
 		graph.prepR = REAL(getListElement(prepGraph,"parameters"));
+		*graph.oldpar = *graph.prepR;
+		*graph.prepDone = 1;
 	}
 
 
@@ -93,7 +99,10 @@ SEXP fun_c(SEXP Args)
 	fun.Init(&graph, parvec, &parn, gtype, ftype, fpar, incl, dbg);
 	if(*dbg)printf("done.\n");
 	if(*dbg)printf("Calculating:\n");
-	fun.calculate();
+
+	if(*prepGraphIsTarget){ fun.re_calculate(); }
+	else{  fun.calculate();  }
+
 	if(*dbg)printf("done.\n");
 	return fun.toSEXP();
 }

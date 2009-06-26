@@ -3,6 +3,7 @@ freqs<-function(pp)
 	m<-union(pp$marks,NULL)
 	h<-NULL
 	for(i in m) h<-c(h, sum(pp$marks==i))
+	names(h)<-m
 	h
 }
 ####################################################################################

@@ -74,9 +74,9 @@ void Fun::calculate()
 		if(*this->dbg)printf("Fun %i/%i: graph[",(int)parvec.size()-i,(int)parvec.size());
 
 		// update graph
-		*graph->oldpar = *graph->par;
 		graph->par = &parvec[i];
 		graph->sg_calc();
+		*graph->oldpar = *graph->par;
 
 		if(*this->dbg)printf("] Value[ ");
 		// calc index

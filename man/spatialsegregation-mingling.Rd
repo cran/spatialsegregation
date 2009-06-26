@@ -36,7 +36,7 @@ Mingling index used by Lewandowski\&Pommerening 1997 and Graz 2004.
 \item{parvec}{Default 1:20. Vector for the neighbourhood defining graph, e.g. \code{geometric} graph with different \code{r}.}
 \item{graph_type}{Default \code{knn}. Type of the neighbourhood graph. Accepts: \code{knn}, \code{geometric}, \code{delauney}, \code{gabriel}.}
 \item{type}{Default NULL. Calculate only for type 'type'. If NULL compute mean over all types.}
-\item{ratio}{Default FALSE. If TRUE, scale the typewise values \code{$M\_t$} using formula \code{$(1-M\_\tau)/\lambda\_\tau$} which equals 1 for Poisson.}
+\item{ratio}{Default FALSE. If TRUE, scale the typewise values \code{$M_t$} using formula \code{$(1-M_tau)/lambda_tau$} which equals 1 for Poisson.}
 \item{graph_par}{The single parameter to calculate the value in.}
 \item{...}{Further tuning parametes for the function segregationFun.}
 }

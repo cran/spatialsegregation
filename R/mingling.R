@@ -31,7 +31,9 @@ minglingF<-function(pp, parvec=1:20, graph_type="knn", type=NULL, ratio=FALSE, .
 	w<-f/sum(f)
 	
 	segfcl(list(M=apply(unname(res$v),2,mean),sd=apply((res$v),2,sd), 
-			 typewise=(res$v), Mw=apply(unname(res$v),2,weighted.mean,w=w),gtype=graph_type, par=res$parvec,
+			 typewise=(res$v), Mw=apply(unname(res$v),2,weighted.mean,w=w),gtype=graph_type, 
+			 frequencies=f,
+			 par=res$parvec,
 			 note=res$note,note2=note2, poisson=poisson))
 }
 

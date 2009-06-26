@@ -45,5 +45,7 @@ spatialsegregation_function_explanations<-list(
 		M="$M : means over typewise mingling values\n$Mw: weighted means, relative abundances as weights\n$sd : sd of typewise values\n$par : parameters used\n$typewise : typewise mingling values\n$poisson : Value for Poisson\n",
 		S="$S : spatial Simpson index values\n$par : parameters used\n$typewise : typewise values of which S is the sum\n$poisson : Value for Poisson\n",
 		H="$H : spatial Shannon index values\n$par : parameters used\n$typewise : pi_tau values i.e. local relative frequencies\n$global : Global entropy\n$poisson : Value for Poisson\n",
-		I="$I : means over typewise mingling values\n$Mw: weighted means, relative abundances as weights\n$sd : sd of typewise values\n$par : parameters used\n$typewise : typewise ISAR values\n$poisson : Values for Poisson\n"
+		I="$I : means over typewise mingling values\n$Iw: weighted means, relative abundances as weights\n$sd : sd of typewise values\n$par : parameters used\n$typewise : typewise ISAR values\n$poisson : Values for Poisson\n"
 		)
+
+#######################################################################################

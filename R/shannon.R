@@ -4,14 +4,14 @@
 # Author: Tuomas Rajala <tarajala@maths.jyu.fi>
 ###############################################################################
 
-shannonF<-function(pp, parvec=1:20, graph_type="knn", ...)
+shannonF<-function(pp, parvec=1:20, graph_type="knn", v2=FALSE, ...)
 #Shannon index for graphs, with possibly various range-parameters
 {
 	sum0<-summary(pp)
 	note<-""
 	parvec1<-parvec
 		
-	res<-segregationFun(pp=pp, fpar=NULL, graph_type=graph_type, graph_parvec=parvec, funtype=2, ...) # calculates only the pii_tau-vector
+	res<-segregationFun(pp=pp, fpar=ifelse(v2,1,0), graph_type=graph_type, graph_parvec=parvec, funtype=2, ...) # calculates only the pii_tau-vector
 	
 	#lambs<-summary(pp[as.logical(res$included)])$marks[,3]
 	#lambs<-lambs[lambs>0]
@@ -27,8 +27,20 @@ shannonF<-function(pp, parvec=1:20, graph_type="knn", ...)
 		
 		1-a/eglobal
 	}
-	note2<-"Spatial Shannon index"	
-	segfcl(list(H=unname(apply(res$v,2,f)),typewise=res$v, global=-eglobal, par=res$parvec,note=res$note, note2=note2, gtype=graph_type, poisson=0))
+	if(v2)
+	{
+		H<-apply(-res$v,2,mean)
+		typewise<--res$v
+		note2<-"Spatial Shannon index, v2"
+	}
+	else
+	{
+		H<-unname(apply(res$v,2,f))
+		typewise<-res$v
+		note2<-"Spatial Shannon index"
+	}	
+	
+	segfcl(list(H=H,typewise=typewise, global=-eglobal, par=res$parvec,note=res$note, note2=note2, gtype=graph_type, poisson=0))
 }
 
 

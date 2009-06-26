@@ -26,7 +26,7 @@ The function \code{isar_index} is a shortcut to get a single value for the patte
 }
 
 \usage{
-isarF(pp, parvec = 1:20, graph_type = "knn", type = NULL, ...)
+isarF(pp, parvec = 1:20, graph_type = "knn", type = NULL, v2=FALSE, ...)
 isar_index(pp, graph_type = "knn", graph_par = 4, type = NULL, ...)
 }
 \arguments{
@@ -35,6 +35,7 @@ isar_index(pp, graph_type = "knn", graph_par = 4, type = NULL, ...)
 \item{graph_type}{Default \code{knn}. Type of the neighbourhood graph. Accepts: \code{knn}, \code{geometric}, \code{delauney}, \code{gabriel}.}
 \item{type}{Default NULL. Calculate only for type 'type'. If NULL compute mean over all types.}
 \item{graph_par}{The single parameter to calculate the value in.}
+\item{v2}{Logical. Estimate species/neighbours -ratios instead.}
 \item{...}{Further tuning parametes for the function segregationFun.}
 }
 

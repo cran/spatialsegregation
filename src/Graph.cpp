@@ -12,14 +12,9 @@ Graph::~Graph()
 {
 }
 /********************************************************************************************/
-double Graph::Dist1(int *i, int *j)
+double Graph::Dist(int *i, int *j)
 {
-  return getDist(pp,i,j, toroidal);
-}
-/********************************************************************************************/
-double Graph::Dist2(int *i, int *j)
-{
-    return getDist(i, j, pp->n, pdists);
+    return this->pp->getDist(i, j);
 }
 /********************************************************************************************/
 /********************************************************************************************/
@@ -28,23 +23,25 @@ void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDist
 	if(*dbg0)printf("intializing graph-object... ");
 
 	pp = pp0;
-	par=par0;prepR=prepR0;
+	par=par0;
+	prepR=prepR0;
 	opar = *par;
 	oldpar = &opar;
 	doDists=doDists0;dbg=dbg0;
 	toroidal= toroidal0;
 	nodelist.resize(*pp->n);
-	pdists = &distTriangle;
+
 	gtype = gtype0;
-	Dist = &Graph::Dist1;  // calculate anew every time
+
+	if(toroidal)pp->toggleToroidal();
 	if(*doDists)  // distance triangle
 	{
 		if(*dbg)printf("Precalculating distances...");
-		calcDists(pp, pdists,toroidal);
-		Dist = &Graph::Dist2;   // retrieve from distTriangle
+		pp->calcDists();
 		if(*dbg)printf("ok. ");
 	}
-
+	pdone = 0;
+	prepDone = &pdone;
 
 	if(*dbg)printf(" done.\n");
 
@@ -135,11 +132,12 @@ void Graph::addNew(int i, int j)
 void Graph::sg_calc()
 {
 	// preprocess if requested
-	if(prepR[0]>0 && *oldpar<= *par )
+	if( *prepR > 0 & *prepDone == 0 )
 	{
 		if(*dbg)printf("Preprocessing[");
 		this->sg_geometric(prepR);
 		if(*dbg)printf("] ok.\n ");
+		*prepDone = 1;
 	}
 	//start the calculation
 	if(*gtype==0) //geometric
@@ -181,7 +179,7 @@ void Graph::sg_geometric(double *R)
 	for(i=0;i<(*pp->n-1);i++)
 		for(j=i+1;j<*pp->n;j++)
 		{
-			dist = (this->*Dist)(&i,&j);
+			dist = Dist(&i,&j);
 			if(dist<*R){
 				nodelist[i].push_back(j+1);
 				nodelist[j].push_back(i+1);
@@ -202,7 +200,7 @@ void Graph::sg_shrink_geometric(double *R)
 		for(j=0;j < (int) this->nodelist[i].size() ; j++)
 		{
 			j0 = nodelist[i][j]-1;
-			dist = (this->*Dist)(&i,&j0);
+			dist = Dist(&i,&j0);
 			if(dist<*R)
 				node->push_back(j0+1);
 		}
@@ -221,7 +219,7 @@ void Graph::sg_mass_geometric()
 	for(i=0;i<(*pp->n-1);i++)
 		for(j=i+1;j<*pp->n;j++)
 		{
-			dist = (this->*Dist)(&i,&j);
+			dist = Dist(&i,&j);
 			if(dist< pp->mass[i]){
 				nodelist[i].push_back(j+1);
 				nodelist[j].push_back(i+1);
@@ -243,7 +241,7 @@ void Graph::sg_knn()
 		double dists2_i[*pp->n], dists2_i2[*pp->n];
 		for(i=0;i<*pp->n;i++) //for each point
 		{
-			for(j=0;j<*pp->n;j++) dists2_i2[j]=dists2_i[j]= (this->*Dist)(&i,&j); //gather the distances to others
+			for(j=0;j<*pp->n;j++) dists2_i2[j]=dists2_i[j]= Dist(&i,&j); //gather the distances to others
 			qsort( dists2_i, *pp->n, sizeof(double),compare_doubles); // sort distances, rising
 			for(j=1;j<=*k;j++) // find the k nearest
 				for(l=0;l<*pp->n;l++)
@@ -263,26 +261,29 @@ void Graph::sg_knn()
 			node = new std::vector<int>;
 			dists2_i = new double [nodelist[i].size()];
 			dists2_i2 = new double [nodelist[i].size()];
-			if( (int) nodelist[i].size()<*k){ printf("\n preprocessing R too small, not enough neighbours (point #%i)!!\n",i+1); return;}
-			for(l=	0;l< (int) nodelist[i].size();l++)
+			if( (int) nodelist[i].size()<*k){ printf("\n preprocessing R too small, not enough neighbours (point #%i)!!\n",i+1);}
+			else// in case there is more than k precalc neighbours
 			{
-				j = nodelist[i][l]-1;
-				dists2_i2[l]=(this->*Dist)(&i,&j); //gather the distances to others, given preprocessing
-				dists2_i[l]=dists2_i2[l];
+				for(l =	0;l < (int) nodelist[i].size();l++)
+				{
+					j = nodelist[i][l]-1;
+					dists2_i2[l]=Dist(&i,&j); //gather the distances to others, given preprocessing
+					dists2_i[l]=dists2_i2[l];
+				}
+				qsort( dists2_i, nodelist[i].size() , sizeof(double),compare_doubles); // sort distances, rising
+				for(j=0;j<*k;j++) // find the k nearest
+					for(l=0;l< (int) nodelist[i].size();l++)
+						if( dists2_i[j] == dists2_i2[l] ) //with distance comparison
+						{
+							node->push_back(nodelist[i][l]);
+							break;
+						}
+				nodelist[i].clear();nodelist[i].resize(0);
+				for(j=0;j < (int) node->size();j++) nodelist[i].push_back( (*node)[j] );
+				delete node;
+				delete[] dists2_i;
+				delete[] dists2_i2;
 			}
-			qsort( dists2_i, nodelist[i].size() , sizeof(double),compare_doubles); // sort distances, rising
-			for(j=0;j<*k;j++) // find the k nearest
-				for(l=0;l< (int) nodelist[i].size();l++)
-					if( dists2_i[j] == dists2_i2[l] ) //with distance comparison
-					{
-						node->push_back(nodelist[i][l]);
-						break;
-					}
-			nodelist[i].clear();nodelist[i].resize(0);
-			for(j=0;j < (int) node->size();j++) nodelist[i].push_back( (*node)[j] );
-			delete node;
-			delete[] dists2_i;
-			delete[] dists2_i2;
 		}
 	}
 	 if(*dbg)printf(" Ok.");
@@ -299,6 +300,8 @@ void Graph::sg_shrink_knn()
 /********************************************************************************************/
 void Graph::sg_gabriel()
 {
+	int kk = (int) par[0];
+	if(*dbg & kk>0)printf("%i-",kk);
 	if(*dbg)printf("Gabriel:");
 	int i,j,k, empty,m,l,h;
 	double x0,y0,R2, d;
@@ -313,7 +316,7 @@ void Graph::sg_gabriel()
 			  y0 = fabs(pp->y[i]-pp->y[j])/2.0+fmin(pp->y[i],pp->y[j]);
 			  R2 = ( pow(pp->x[i]-pp->x[j],2) + pow(pp->y[i]-pp->y[j],2) )/4.0;
 			  //		brute force
-			  empty = 1;
+			  empty = 1+kk;
 			  for(k=0;k<*pp->n;k++)
 			  {
 				  if(k != i)
@@ -322,8 +325,8 @@ void Graph::sg_gabriel()
 						  d = pow(x0-pp->x[k],2) + pow(y0-pp->y[k],2);
 						  if( d<R2 )
 						  {
-							  empty = 0;
-							  break;
+							  empty = empty - 1;
+							  if(empty == 0) break;
 						  }
 					  }
 			  }
@@ -344,7 +347,7 @@ void Graph::sg_gabriel()
 				x0 = fabs(this->pp->x[i]-this->pp->x[j])/2.0+fmin(this->pp->x[i],this->pp->x[j]);
 				y0 = fabs(this->pp->y[i]-this->pp->y[j])/2.0+fmin(this->pp->y[i],this->pp->y[j]);
 				R2 = (pow(this->pp->x[i]-this->pp->x[j],2) + pow(this->pp->y[i]-this->pp->y[j],2) )/4.0;
-				empty = 1;
+				empty = 1+kk;
 				for(m=0; m < (int)this->nodelist[i].size();m++) // the small ball is included in the preprocessing ball
 				{
 					k =  (int) this->nodelist[i][m]-1;
@@ -354,8 +357,8 @@ void Graph::sg_gabriel()
 							d = pow(x0-pp->x[k],2) + pow(y0-pp->y[k],2);
 							if( d<R2 )
 							{
-								empty = 0;
-								break;
+								empty = empty - 1;
+								if(empty == 0) break;
 							}
 						}
 				}
@@ -445,7 +448,7 @@ void Graph::sg_MST()
           zz=0;
           break;
         }
-        apu1 = (this->*Dist)(&i,&done[j]); //dists[i*(*n)+done[j]];
+        apu1 = Dist(&i,&done[j]); //dists[i*(*n)+done[j]];
         if( apu1<apu0 ){
           apu0=apu1;
           k0=i;
@@ -479,7 +482,7 @@ void Graph::sg_markcross()
 	for(i=0;i<(*pp->n-1);i++)
 		for(j=i+1;j<*pp->n;j++)
 		{
-			dist = (this->*Dist)(&i,&j);
+			dist = Dist(&i,&j);
 			if(dist< pp->mass[i]+pp->mass[j]){
 				nodelist[i].push_back(j+1);
 				nodelist[j].push_back(i+1);
@@ -497,7 +500,7 @@ void Graph::sg_SIG()
 	{
 		dist = MAX_DOUBLE;
 		for(j=0;j<*pp->n;j++)
-			if(i!=j) dist = fminf(dist, (this->*Dist)(&i,&j));
+			if(i!=j) dist = fminf(dist, Dist(&i,&j));
 		pp->mass[i]=dist;
 	}
 	*dbg=0;
@@ -515,17 +518,17 @@ void Graph::sg_RST()
 
   for(i=0;i<*pp->n-1;i++)
   {
-    apu0 = (this->*Dist)(&i,&foc_i);//dists[i*(*n+1)+*n];
+    apu0 = Dist(&i,&foc_i);//dists[i*(*n+1)+*n];
     apu3=MAX_DOUBLE;
     k=-1;
     for(j=0;j<*pp->n-1;j++)
     {
       if(j!=i)
       {
-        apu1 = (this->*Dist)(&j,&foc_i);//dists[j*(*n+1)+*n];
+        apu1 = Dist(&j,&foc_i);//dists[j*(*n+1)+*n];
         if(apu1 < apu0 )
         {
-          apu2 = (this->*Dist)(&i,&j);//dists[i*(*n+1)+j];
+          apu2 = Dist(&i,&j);//dists[i*(*n+1)+j];
           if( apu2 < apu3 )
           {
             apu3 = apu2;
@@ -550,8 +553,8 @@ void Graph::sg_RNG()
         	isempty = 1;
         	for(k=0;k<*pp->n;k++)
         		if(k!=i&k!=j)
-        			if((this->*Dist)(&i,&k) < (this->*Dist)(&i,&j))
-        				if((this->*Dist)(&j,&k) < (this->*Dist)(&j,&i))
+        			if(Dist(&i,&k) < Dist(&i,&j))
+        				if(Dist(&j,&k) < Dist(&j,&i))
         				{isempty=0;break;}
         	if(isempty)
         	{
@@ -574,7 +577,7 @@ void Graph::sg_CCC()
 		{
 			pp->mass[i]=MAX_DOUBLE;
 			for(j=0;j<*pp->n;j++)
-				if(j!=i & pp->type[j]!=type0) pp->mass[i]=fminf(pp->mass[i],(this->*Dist)(&i,&j));
+				if(j!=i & pp->type[j]!=type0) pp->mass[i]=fminf(pp->mass[i],Dist(&i,&j));
 		}
 	}
 	for(i=0;i<*pp->n;i++) //TODO: optimize this
@@ -582,7 +585,7 @@ void Graph::sg_CCC()
 			for(j=0;j<*pp->n;j++)
 				if(i!=j)
 					if(pp->type[j]==type0)
-						if((this->*Dist)(&i,&j)< pp->mass[i])
+						if(Dist(&i,&j)< pp->mass[i])
 							addNew(i,j+1);
 	if(*dbg) printf(" Ok.");
 }
@@ -600,7 +603,7 @@ void Graph::sg_cut(double *R)
 		for(j=0; j < (int)nodelist.at(i).size();j++)
 		{
 			k = nodelist.at(i).at(j)-1;
-			if( (this->*Dist)(&i, &k) < *R )
+			if( Dist(&i, &k) < *R )
 				pnode->push_back(k+1);
 			else
 				count++;

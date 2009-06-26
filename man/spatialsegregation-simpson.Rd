@@ -16,7 +16,7 @@ Compute the spatial and aspatial Simpson index for a given multitype point patte
   }
 
 
-The form of Simpson index is  \code{$S = 1 - \sum \pi\_\tau$}, where the sum is over the types of the pattern, and \code{$\pi\_\tau$} is like
+The form of Simpson index is  \var{S = 1 - sum pi_tau}, where the sum is over the types of the pattern, and \var{pi_tau} is like
 in Shimatani\& Kubota 2004.
 
 The function \code{simpsonF} is the main calculation function. Uses function \code{\link{segregationFun}} with parameter \code{ftype=3}. 
