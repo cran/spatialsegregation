@@ -1,62 +1,120 @@
 #the generic function for segregation measures
+# isarF, minglingF, shannonF and simpsonF
+#  are the wrappers that should be used.
 #
+#Tuomas Rajala <tuomas.a.rajala@jyu.fi>
+# last change : 060909 
+#################################################
+#constant: the supported neighbourhoods
+kGraphs<-c("geometric","knn","gabriel","delauney")
 
-segregationFun<-function(pp, fpar=NULL, graph_parvec=1:20, graph_type="knn", 
-		                 toroidal=FALSE, dbg=FALSE, funtype=1, 
-						 doDists=FALSE, prepR=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE, included=NULL, minusR=NULL, relative=FALSE)
-# funtypes:
+segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL, 
+		                 toroidal=FALSE, minusRange=0,  included=NULL, dbg=FALSE, 
+						 doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE)
+# function types:
 #	1 mingling
 #   2 shannon
 #   3 simpson
 #   4 ISAR
 
 {
-	nGRAPHS<-c("geometric","knn","gabriel","delauney")
-	if(!graph_type%in%nGRAPHS)stop("Error segregationFun: Wrong graphtype.")
-	typei<-which(graph_type==nGRAPHS)-1
+	# a note about the neighbourhoods
+	note<-NULL
+	# turn the neighbourhood type into an integer
+	ntypei<-charmatch(ntype, kGraphs) - 1 #minus1 for c-side...
+	# check 
+	if(is.na(ntypei))stop("Error segregationFun: Wrong neighbourhood type.")
 	
-	if(typei>2)graph_parvec=0
-	if(typei>1) typei=typei+1 # for the c++-module coherence with 'spatgraphs' 
-	if(class(prepGraph)!="sg" & !is.null(prepGraph) )stop("Error segregationFun: Prepared graph is not of type 'sg'.")
-	if(is.null(funtype))stop("Error segregationFun: wrong function type.")
-	pp<-sg_modify_pp(pp)
+	# init neighbourhood parameters if not given: geometric range taken from Kest in spatstat
+	# r not given
+	if(is.null(r))
+	{
+		# snip
+		if(ntypei==0)
+		{
+			
+			W <- X$window
+			npoints <-X$n
+			lambda <- npoints/area.owin(W)
+			rmaxdefault <- rmax.rule("G", W, lambda)
+			breaks <- handle.r.b.args(r, NULL, W, rmaxdefault=rmaxdefault)
+			rvals <- breaks$r
+			rmax  <- breaks$max
+			parvec<-rvals
+		}
+		# end snip
+		# defaults for knn, gabriel and delauney. TODO: k-nn not yet clear what is a good range
+		else
+			parvec <- switch(ntype, "knn"=1:20, 0)
+	}
+	else parvec <- r # r given
 	
-	note<-""
-	if(relative & typei==0){sum0<-summary(pp);note<-"r scaled with sqrt(pi*lambda)."; graph_parvec<- graph_parvec/sqrt(pi*sum0$int)}
+	# TODO: for the c++-module coherence with 'spatgraphs', skip mass geometric
+	if(ntypei>1) ntypei <- ntypei+1  
 	
-	if(!is.null(minusR)) included<-minusID_gf(pp, minusR)
+	# if a precalculated Graph is given, check its from spatgraphs
+	if(class(prepGraph)!="sg" & !is.null(prepGraph) )stop("Error segregationFun: Prepared graph is not of class 'sg'.")
+	
+	#add a note about prepGraph
+	if(!is.null(prepGraph)) note<-c(note,paste("PrepGraph given, type ",prepGraph$gtype,", par ",prepGraph$par,sep=""))
+	
+	# turn the wanted function type into an integer
+	funi <- charmatch(fun, (kFuns<-c("mingling","shannon","simpson","isar")))
+	if(is.na(funi)) stop("Error segregationFun: wrong function type.")
+	
+	# TODO: modify the pp, see below in the function	
+	pp<-sg.modify.pp(X)
+	
+	# if a minus  (border) correction is to be used, compute the ones to exclude
+	if(minusRange>0)
+	{
+		included<-minusID.gf(X, minusRange)
+		note<-c(note,paste("Minus correction, radius=", minusRange, ";", sep=""))
+	}
+	# if we accept that all points are good for computation, included vector is all 1's
 	if(is.null(included) | length(included)!=pp$n) included<-rep(1,pp$n)
 	
+	# check if the prepGraph is given when used as the target neighbourhood configuration
 	if(prepGraphIsTarget && is.null(prepGraph)) stop("Error segregationFun: prepGraph not given but needed for calculation.")
-	prepGraph$'isnull'<- as.integer(is.null(prepGraph))
 	
+	# this is for the c-side check to know if we are giving a prepGraph
+	prepGraph$'isnull'<- as.integer(is.null(prepGraph))
 		
-	res<-.External("fun_c", as.integer(dbg), pp, as.numeric(fpar), 
-					as.integer(typei), as.numeric(graph_parvec), 
-					as.integer(funtype), as.integer(toroidal), 
-					as.numeric(prepR), as.integer(doDists), 
+	# the main call 
+	res<-.External("fun_c", as.integer(dbg), pp, as.numeric(funpars), 
+					as.integer(ntypei), as.numeric(parvec), 
+					as.integer(funi), as.integer(toroidal), 
+					as.numeric(prepRange), as.integer(doDists), 
 					as.integer(included), prepGraph, 
 					as.integer(prepGraphIsTarget),
 					PACKAGE="spatialsegregation")
+
+	# turn the variable size result list into an matrix: 1 col per valuetype, 1 row per parameter
+	a<-t(matrix(unlist(res),ncol=length(parvec)))
+	rownames(a)<-paste("par",1:length(parvec),sep="")
+	# the unit name: different from Kest etc, reports the meaning of the unit depending on -
+	#   the neighbourhood type
+	unitname<-switch(ntype,"geometric"="range","knn"="neighbour",NULL)
 	
-			
-	a<-matrix(unlist(res),ncol=length(graph_parvec))
-	colnames(a)<-paste("par",1:length(graph_parvec),sep="")
-	rownames(a)<-paste("type",1:dim(a)[1],sep="")
-	list(v=a, included=as.logical(included), note=note, parvec=graph_parvec)
+	list(v=a, included=as.logical(included), 
+		 parvec=parvec, unitname=unitname, 
+		 ntype=ntype, note=note
+        )
 }
+
+
 #####################
 
-minusID_gf<- function (pp0, minusR)
+minusID.gf<- function (pp0, minusRange)
 {
-	id <- (pp0$x < (pp0$window$x[2] - minusR)) & (pp0$x > (pp0$window$x[1] +
-					minusR)) & (pp0$y < (pp0$window$y[2] - minusR)) & (pp0$y >
-				(pp0$window$y[1] + minusR))
+	id <- (pp0$x < (pp0$window$x[2] - minusRange)) & (pp0$x > (pp0$window$x[1] +
+					minusRange)) & (pp0$y < (pp0$window$y[2] - minusRange)) & (pp0$y >
+				(pp0$window$y[1] + minusRange))
 	id
 }
 
 #####################
-sg_modify_pp<-function(pp)
+sg.modify.pp<-function(pp)
 {
 	n<-length(pp[["x"]])
 	if(length(pp[["mass"]]) < n ) # set the masses

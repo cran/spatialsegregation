@@ -1,5 +1,5 @@
 \name{spatialsegregation-helpers}
-\alias{clean_up_data}
+\alias{clean.up.data}
 \alias{freqs}
 \alias{minusID}
 \alias{shake}
@@ -22,7 +22,7 @@ have dbh-values (pp with a component dbh).
 
 Small functions to manipulate multitype point patterns.
 
-\code{clean_up_data}: Returns a subsample fullfilling the given constrains.
+\code{clean.up.data}: Returns a subsample fullfilling the given constrains.
 
 \code{freqs}: Returns the abundance vector.
 
@@ -32,7 +32,7 @@ Small functions to manipulate multitype point patterns.
 }
 
 \usage{
- clean_up_data(pp, dbh = 10, atleast = 10)
+ clean.up.data(pp, dbh = 10, atleast = 10)
  freqs(pp)
  minusID(pp, minusR, dbh = 0, atleast = 0)
  shake(pp, a = 0.001)

@@ -1,64 +1,122 @@
-# mingling.R
-# 
-# ISAR function for multitype spatial point pattern and graphs
-# see: T. Wiegand et al.: How individual species structure diversity in tropical forests. PNAS, November 16 2007
-
-# Author: Tuomas Rajala <tarajala@maths.jyu.fi>
+# ISAR or local species richness summary for multitype spatial point pattern
+#
+# Desc: 
+#   Estimate the number of types present in the neighbourhoods of points
+#
+#
+# Neighbourhood definitions (parameter): 
+#   Geometric (r)
+#   k-nearest neighbours (k)
+#	Gabriel (none)
+#   Delauney triangulation (none)
+#
+#
+#
+# Author: Tuomas A. Rajala <tuomas.a.rajala@jyu.fi>
+#
+#
+# Last update: 060809
 ###############################################################################
-# 
 
-
-isarF<-function(pp, parvec=1:20, graph_type="knn", type=NULL, v2=FALSE, ...)
-#ISAR for various graphs
-#If target type is not given (type=NULL) take over all types mean
-#type as integer 1,...,S=number of types
-
+isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
 {
-	
-	note2<-paste("ISAR for type",type)
-	if(is.null(type))
+	# check that X is ppp-object
+	verifyclass(X, "ppp")
+	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern.")
+	# if no target given, calculate for all types
+	if(is.null(target))
 	{
-		type<-0
-		note2<-"ISAR over all types."
+		targeti <- 0
+		valu   <- "ISARmean"
 	}
-	note3<-NULL
-	if(v2)note3<-"Degree weighted values, E_x [I(x)/deg(x)]."
-
-#   main function call
-	res<-segregationFun(pp, fpar=c(type,as.integer(v2)), graph_type=graph_type, graph_parvec=parvec, funtype=4, ...)
+	# else convert to an integer
+	else
+	{
+		targeti<- which( levels(X$marks)  == target)
+		if(length(targeti)!=1) stop("Target type not one of pattern types.")
+	}
 	
-#   the poisson values
-	if(graph_type=="geometric")mdeg<-function(l,k)pi*l*k^2
-	if(graph_type=="knn")mdeg<-function(l,k)k
-	if(graph_type=="delauney")mdeg<-function(l,k) 6
-	if(graph_type=="gabriel")mdeg<-function(l,k) 4
-	poisson<-NULL
-	sum0<-summary(pp)
+	#v2 logical if a degree weighted version should be calculated
+	if(v2) funtype <- "Neighbour-count-weighted-ISAR"
+	else funtype <- "ISAR"
+	
+	# use the main calc function
+	res<-segregationFun(X=X, fun="isar", r, funpars=c(targeti, as.integer(v2)), ...)
+	
+	# theoretical values in CSR: depends on the neighbourhood type
+	ntype<-res$ntype
+	mdeg<-function(l,k)c( pi*l*k^2, k, 4, 6)[charmatch(ntype, kGraphs)]
+	#    get the intensities
+	sum0<-summary(X)
 	l<-sum0$marks[,3]
-	for(i in 1:length(parvec)) poisson<-c(poisson, sum(1-(1-l/sum(l))^mdeg(sum(l),parvec[i]) )/ifelse(v2,mdeg(sum(l),parvec[i]),1) )
+	#    calc the theoretical values, also for the degree weighted version
+	theo<-NULL
+	for(para in res$parvec)theo<-
+				c(theo,
+				sum(1-(1-l/sum(l))^mdeg(sum(l),para) )/ifelse(v2,mdeg(sum(l),para),1))
+		
+	# create the fv-object
+	isar.final<-fv(data.frame(theo=theo,par=res$parvec), 
+			       argu="par",
+				   alim=range(res$parvec),
+				   ylab=substitute(ISAR, NULL),
+			       desc=c("CSR values","Parameter values"),
+				   valu="theo",
+				   fmla=".~par",
+			   unitname=res$unitname,
+	   			  fname=funtype
+			           )
+					   
+	# add all typewise values if no target type given
+	if(targeti==0)
+	{
+		# the values from calculation
+		tw<-res$v
 	
-	#other
-	if(pp$markformat=="none")pp$markformat<-"vector" # TODO: fix this bug
-	f<-freqs(pp[res$included])
-	w<-f/sum(f)
-	if(type!=0)w<-w[which(rownames(sum0$marks)==type)]
+		# set the names right, and don't forget to check inclusion (might drop some types off)
+		colnames(tw)<-union(marks(X[res$included]),NULL)
+		isar.final<-bind.fv(x=isar.final,
+						    y=tw,
+					  	 desc=paste("Typewise",funtype,"for type",colnames(tw)),
+					     labl=colnames(tw)
+					         )
+					
+		isar.final<-bind.fv(x=isar.final,
+				            y=data.frame("ISARmean"=apply(res$v,1,mean,na.rm=TRUE)),
+				         desc=paste("Mean",funtype,"over types"),
+						 labl="ISARmean",
+						 preferred="ISARmean"
+				 	     	 )		
+		# a frequency weighted mean instead of just a mean, w=freqs/sum(freqs)
+		#Iw=apply(res$v,2,weighted.mean,w=w,na.rm=TRUE), 
+	}
 	
-	segfcl(list(I=apply(res$v,2,mean,na.rm=TRUE),sd=apply(res$v,2,sd,na.rm=TRUE),typewise=res$v,
-					Iw=apply(res$v,2,weighted.mean,w=w,na.rm=TRUE), frequencies=f, 
-					gtype=graph_type,par=res$parvec,note=res$note,note2=note2,note3=note3,poisson=poisson))
+	# if target type given add the values for the target type
+	else
+	{
+		isar.final<-bind.fv(x=isar.final,
+				            y=data.frame("ISAR"=res$v[,1]),
+						 desc=paste(funtype,"for type",target),
+						 labl="ISAR",
+					preferred="ISAR"
+								)
+	}
+
+	# attach the frequencies too
+	attr(isar.final,"frequencies")<-freqs(X[res$included])
+	
+	# and some notes
+	attr(isar.final,"neighbourhoodType")<-res$ntype
+	attr(isar.final,"note")<-res$note
+	
+	# return 
+	isar.final
 }
 
 ###############################################################################
-
-###############################################################################
-isar_index<-function(pp, graph_type="knn", graph_par=4, type=NULL, ...)
-#if type=NULL compute the arithmetic mean over all types
-#type as integer 1,...,S=number of types
+isar.index<-function(X, r=4, ntype="knn", ...)
 {
-	if(is.null(type)){type<-0;nvec<-paste("Mean ISAR over all types.")}
-	else nvec<-paste("ISAR for type",type)
-	I0<-isarF(pp=pp, graph_type=graph_type, parvec=graph_par[1], type=type, ...)
-	I<-I0$I
-	names(I)<-nvec
-	I
+	if(length(r)>1)stop("Use isarF for vector of parameter values.")
+	I0<-isarF(X, r=r, ntype=ntype, ...)
+	data.frame(meanISAR=I0$I, par=I0$par)
 }

@@ -6,20 +6,20 @@
 \title{Spatial Segregation Measures}
 
 \description{
-Collection of measures of spatial multitype exposure: segregation vs. mingling.
+Collection of measures or summaries of spatial multitype exposure: segregation vs. mingling.
 }
 
 
 \details{
   
   \tabular{ll}{
-    Date: \tab 2009-03-09\cr
+    Date: \tab 2009-09-06\cr
     License: \tab GPL v2 or later\cr
   }
 
-This is a collection of summaries for multitype spatial point patterns (check package 'spatstat' for more info about them). 
-The package is developed for the article Rajala\&Illian 2009, and consists of summaries for detecting inter-type forces in the 
-pattern.
+This is a collection of summaries for multitype spatial point patterns (check package 'spatstat' for more
+info about them). The package is developed for the article Rajala\&Illian 2009, and consists of summaries
+for detecting inter-type forces in the pattern.
 
 See the helps of one of the function for further information how to use the package.  
 
@@ -27,15 +27,15 @@ See the helps of one of the function for further information how to use the pack
 \preformatted{
 Functions
 ------------------
-segregationFun   -   General calculation function, please use one of the following:
+segregationFun   -   General calculation function, please use one of the following wrappers:
 minglingF        -   Mingling index
 shannonF         -   spatial Shannon index
 simpsonF         -   spatial Simpson index
 isarF            -   ISAR function
-mingling\_index   -   shortcut for a single value
-shannon\_index    -   -''-
-simpson\_index    -   -''-
-isar\_index       -   -''-
+mingling.index   -   shortcut for a single value
+shannon.index    -   -''-
+simpson.index    -   -''-
+isar.index       -   -''-
 }
 
 }
@@ -43,7 +43,7 @@ isar\_index       -   -''-
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tarajala@maths.jyu.fi
+tuomas.a.rajala@jyu.fi
 }
 
 \references{

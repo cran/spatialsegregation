@@ -1,3 +1,13 @@
+2.10:
+ - change functions' value to fv-class from package-spatstat: Now support for e.g. envelope, plot
+ - BIG CHANGES! Probably not combatible with previous versions 
+ - removed the 'ratio'-parameter, no need
+ - commented the code more
+ - better documentation
+ - writing this at 00:55-2009-09-06
+
+2.06:
+ - fix the print error of ISAR
 2.05:
  - fix CRAN compilation errors 
  

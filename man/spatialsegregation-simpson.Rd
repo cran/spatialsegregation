@@ -1,6 +1,6 @@
 \name{spatialsegregation-simpson}
 \alias{simpsonF}
-\alias{simpson_index}
+\alias{simpson.index}
 \docType{package}
 
 \title{Spatial Simpson Index}
@@ -19,30 +19,33 @@ Compute the spatial and aspatial Simpson index for a given multitype point patte
 The form of Simpson index is  \var{S = 1 - sum pi_tau}, where the sum is over the types of the pattern, and \var{pi_tau} is like
 in Shimatani\& Kubota 2004.
 
-The function \code{simpsonF} is the main calculation function. Uses function \code{\link{segregationFun}} with parameter \code{ftype=3}. 
+The function \code{simpsonF} is the main calculation function. Uses function \code{\link{segregationFun}}.
 
-The function \code{simpson_index} is a shortcut to get a single value for the pattern. Uses 4-nn graph by default. 
+The function \code{simpson.index} is a shortcut to get a single value for the pattern. Uses 4-nn graph by default. 
 
 }
 
 \usage{
-simpsonF(pp, parvec = 1:20, graph_type = "knn", ...)
-simpson_index(pp, graph_type = "knn", graph_par = 4, spatial = TRUE, ...)
+simpsonF<-function(X, r=NULL, ...)
+simpson.index(X, spatial=FALSE, ...)
+
 }
 
 \arguments{
-\item{pp}{Multitype point pattern (see package \code{spatstat})}
-\item{parvec}{Default 1:20. Vector for the neighbourhood defining graph, e.g. \code{geometric} graph with different \code{r}.}
-\item{graph_type}{Default \code{knn}. Type of the neighbourhood graph. Accepts: \code{knn}, \code{geometric}, \code{delauney}, \code{gabriel}.}
-\item{graph_par}{The single parameter to calculate the value in.}
+\item{X}{Multitype point pattern of class \code{ppp} (see package 'spatstat')}
+\item{r}{Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with different ranges.}
 \item{spatial}{If FALSE, return the classical aspatial index value.}
-\item{...}{Further tuning parametes for the function segregationFun.}
+\item{...}{Further parametes for the function \code{\link{segregationFun}}.}
 }
+\value{
+ Returns an \code{fv}-object, see \code{spatstat} for more information.
+}
+
 
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tarajala@maths.jyu.fi
+tuomas.a.rajala@jyu.fi
 }
 \references{
 Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2009.

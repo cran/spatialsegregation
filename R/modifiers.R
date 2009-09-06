@@ -7,7 +7,7 @@ freqs<-function(pp)
 	h
 }
 ####################################################################################
-clean_up_data<-function(pp,dbh=10,atleast=10)
+clean.up.data<-function(pp,dbh=10,atleast=10)
 {
 	h<-freqs(pp)
 	m<-union(pp$marks,NULL)

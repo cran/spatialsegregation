@@ -1,40 +1,78 @@
 
 ###############################################################################
-# Spatial Simpson index functional
+# Spatial Simpson index
 #
 #
 # Author: Tuomas Rajala <tarajala@maths.jyu.fi>
+# last change: 060909
 ###############################################################################
 
-simpsonF<-function(pp,parvec=1:20, graph_type="knn", ...)
+simpsonF<-function(X, r=NULL, ...)
 #Simpson index for graphs, with possibly various range-parameters
-#notice that if 'relative'=T we take the normalised range which eases comparisons
 {
-	res<-segregationFun(pp, fpar=NULL, graph_type=graph_type, graph_parvec=parvec, funtype=3, ...)
-	note2<-"Spatial Simpson index"	
-	segfcl(list(S=1-unname(colSums(res$v)), typewise=res$v, par=res$parvec,gtype=graph_type,note=res$note, note2=note2, poisson=simpson_index(pp,spatial=FALSE)))
+	# check that X is multitype ppp-object
+	verifyclass(X, "ppp")
+	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern.")
+	
+	# the main calc function: returns the typewise mean of (deg_i(o)/deg)^2
+	res<-segregationFun(X, r=r, fun="simpson", ...)
+	
+	# calc the non-spatial (global) value
+	aspat<-simpson.index(X,spatial=FALSE)
+	
+	#TODO: the CSR values: possibly not right, the mean degree is not included
+	theo<-rep(aspat, length(res$parvec))
+	
+	# calc the spatial value
+	S <- 1 - unname(rowSums(res$v))
+	
+	# create the fv-object
+	simpson.final<-fv(data.frame(theo=theo, par=res$parvec, S=S),
+			argu="par",
+			alim=range(res$parvec),
+			ylab=substitute(S,NULL),
+			desc=c("CSR values","Parameter values","Spatial Simpson index"),
+			valu="S",
+			fmla=".~par",
+			unitname=res$unitname,
+			fname="Spatial Simpson index"
+	)
+	
+	
+	
+	# include also the typewise values of which the index is a summary
+	attr(simpson.final,"typewise")<- -res$v
+	
+	# add the global index value too
+	attr(simpson.final,"Aspatial Simpson index")<-aspat
+	
+	# add the note about neighbourhood definition
+	attr(simpson.final,"note")<-res$note
+	
+	# return
+	simpson.final
 }
 
-#Simpson index
+####################################################################################################
+#Simpson index, just one value
 
-simpson_index<-function(pp, graph_type="knn", graph_par=4, spatial=TRUE, ...)
+simpson.index<-function(X, spatial=FALSE, ...)
 {
-	
+	#the traditional aspatial Simpson index 1-D
 	if(!spatial)
-	{			#the traditional aspatial Simpson index
-		sum0<-summary(pp)
+	{			
+		sum0<-summary(X)
 		ints<-sum0$marks[,3]
-		m<-union(pp$marks,NULL)
+		m<-union(X$marks,NULL)
 		pii<-ints/sum(ints)
-		n<-pii*pp$n
-		N<-pp$n
+		N<-X$n
+		n<-pii*N		
 		S<- 1 - sum( n*(n-1)  )/(N*(N-1))#Simpson index of diversity
 		names(S)<-"Non-spatial Simpson index"
 	}
 	if(spatial)
 	{			   #spatial Simpson index for a set of edgelists	
-		S<-simpsonF(pp, parvec=graph_par, graph_type=graph_type, ...)$S
-		#simpsonF2(pp,parvec=seq(0,3,length=30), graph_type="geometric", relative=T, toroidal=FALSE, doDists=T, dbg=F)
+		S<-simpsonF(X, ...)$S
 		names(S)<-"Spatial Simpson index"
 	}
 	S
