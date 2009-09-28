@@ -72,7 +72,6 @@ isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
 	{
 		# the values from calculation
 		tw<-res$v
-	
 		# set the names right, and don't forget to check inclusion (might drop some types off)
 		colnames(tw)<-union(marks(X[res$included]),NULL)
 		isar.final<-bind.fv(x=isar.final,

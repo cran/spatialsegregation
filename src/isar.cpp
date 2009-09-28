@@ -22,7 +22,7 @@ std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *inclu
 		{
 			if(graph->pp->lambdas[i]>0)
 			{
-				a1[0] = (double) i+1;
+				a1[0] = (double) graph->pp->typevec.at(i);
 				value.push_back(isar_normal(graph,a1,dbg,included).at(0));
 			}
 		}
@@ -76,7 +76,7 @@ std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *include
 		{
 			if(graph->pp->lambdas[i]>0)
 			{
-				a1[0] = (double) i+1;
+				a1[0] = (double) graph->pp->typevec.at(i);
 				value.push_back(isar_wdeg(graph,a1,dbg,included).at(0));
 			}
 		}

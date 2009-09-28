@@ -84,9 +84,11 @@ SEXP fun_c(SEXP Args)
 	if(prepG)// if precalculated graph, set the edges, overrule the prepR-parameter
 	{
 		if(*dbg)printf("loading precalculated edges...");
-		std::vector<std::vector<int> > prepNodelist;
-		VectsxpToVector(getListElement(prepGraph,"edges"), prepNodelist);
-		graph.setNodelist(&prepNodelist);
+//		std::vector<std::vector<int> > prepNodelist;
+//TODO: 3xnodelist in memory!! remove atleast 1
+//		VectsxpToVector(getListElement(prepGraph,"edges"), prepNodelist);
+//		graph.setNodelist(&prepNodelist);
+		graph.setNodelist(prepGraph);
 		graph.prepR = REAL(getListElement(prepGraph,"parameters"));
 		*graph.oldpar = *graph.prepR;
 		*graph.prepDone = 1;

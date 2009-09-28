@@ -19,6 +19,7 @@ public:
 	int s;
 	int toroidal;
 	int *S;
+	std::vector<int > typevec;
 	std::vector<double > lambdas;
 	double *xlim;
 	double *ylim;

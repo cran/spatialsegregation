@@ -1,3 +1,7 @@
+2.11:
+ - remove 1 of the duplications of prepGraph
+ - fixed a bug with the marks: not properly mapped if not integer-factors. Now works.
+ 
 2.10:
  - change functions' value to fv-class from package-spatstat: Now support for e.g. envelope, plot
  - BIG CHANGES! Probably not combatible with previous versions 

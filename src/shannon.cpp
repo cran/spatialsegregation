@@ -70,7 +70,7 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 				{
 					for(k=0;k<(int)graph->nodelist[j].size(); k++)
 					{
-						if(graph->pp->type[graph->nodelist[j][k]-1]==i+1)
+						if(graph->pp->type[graph->nodelist[j][k]-1]==graph->pp->typevec.at(i))
 							piitauj = piitauj + 1;
 					}
 					piitauj = piitauj / (double)graph->nodelist[j].size();

@@ -37,7 +37,6 @@ void Fun::Init(Graph *g0, double *par0, int *parn, int *gt, int *ft, double *fpa
 				break;
 			}
 		if(empty)graph->pp->lambdas[i]=0.0;
-
 	}
 }
 

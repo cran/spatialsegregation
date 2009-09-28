@@ -30,7 +30,7 @@ void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDist
 	doDists=doDists0;dbg=dbg0;
 	toroidal= toroidal0;
 	nodelist.resize(*pp->n);
-
+	nodelistp = &nodelist;
 	gtype = gtype0;
 
 	if(toroidal)pp->toggleToroidal();
@@ -55,6 +55,16 @@ void Graph::setNodelist(std::vector<std::vector<int> > *nodelist_new)
 	for(i=0;i<(int)nodelist_new->size();i++)
 		nodelist.push_back(nodelist_new->at(i));
 }
+/********************************************************************************************/
+void Graph::setNodelist(SEXP prepGraph)
+{
+
+	int i;
+	nodelist.clear();nodelist.resize(0);
+	VectsxpToVector(getListElement(prepGraph,"edges"), nodelist);
+}
+
+
 /********************************************************************************************/
 SEXP Graph::toSEXP()
 //transform a std::vector<std::vector<int> > to SEXP, desctructive

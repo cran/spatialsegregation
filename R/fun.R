@@ -63,7 +63,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 	if(is.na(funi)) stop("Error segregationFun: wrong function type.")
 	
 	# TODO: modify the pp, see below in the function	
-	pp<-sg.modify.pp(X)
+	X<-sg.modify.pp(X)
 	
 	# if a minus  (border) correction is to be used, compute the ones to exclude
 	if(minusRange>0)
@@ -72,7 +72,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 		note<-c(note,paste("Minus correction, radius=", minusRange, ";", sep=""))
 	}
 	# if we accept that all points are good for computation, included vector is all 1's
-	if(is.null(included) | length(included)!=pp$n) included<-rep(1,pp$n)
+	if(is.null(included) | length(included)!=X$n) included<-rep(1,X$n)
 	
 	# check if the prepGraph is given when used as the target neighbourhood configuration
 	if(prepGraphIsTarget && is.null(prepGraph)) stop("Error segregationFun: prepGraph not given but needed for calculation.")
@@ -81,7 +81,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 	prepGraph$'isnull'<- as.integer(is.null(prepGraph))
 		
 	# the main call 
-	res<-.External("fun_c", as.integer(dbg), pp, as.numeric(funpars), 
+	res<-.External("fun_c", as.integer(dbg), X, as.numeric(funpars), 
 					as.integer(ntypei), as.numeric(parvec), 
 					as.integer(funi), as.integer(toroidal), 
 					as.numeric(prepRange), as.integer(doDists), 
@@ -91,7 +91,10 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 
 	# turn the variable size result list into an matrix: 1 col per valuetype, 1 row per parameter
 	a<-t(matrix(unlist(res),ncol=length(parvec)))
-	rownames(a)<-paste("par",1:length(parvec),sep="")
+
+	# name the rows par1, par2, ...
+	#rownames(a)<-paste("par",1:length(parvec),sep="")#no need for this anymore
+ 
 	# the unit name: different from Kest etc, reports the meaning of the unit depending on -
 	#   the neighbourhood type
 	unitname<-switch(ntype,"geometric"="range","knn"="neighbour",NULL)
@@ -122,17 +125,28 @@ sg.modify.pp<-function(pp)
 		if(length(pp[["marks"]])< n | !is.numeric(pp[["marks"]])) pp$mass<-rep(1.0,n)
 		else pp$mass<-pp$marks
 	}
+	pp$mass<-as.numeric(pp$mass)
+	
 	if(length(pp[["types"]]) < n) # set the types
 	{
-		if( (is.factor(pp$marks) | is.integer(pp$marks)) & length(pp[["marks"]])==n ) pp$types<-pp$marks 
-		else pp$types<-rep(1,n)
+		if( (is.factor(pp$marks) | is.integer(pp$marks)) & length(pp[["marks"]])==n ) x<-pp$marks 
+		else x<-rep(1,n)
 	}
-	pp$mass<-as.numeric(pp$mass)
-	pp$types<-as.integer(pp$types)
+	else x<-pp$types
+	
+	y<-as.integer(x)
+	m<-union(x,NULL)
+	for(i in 1:length(m))
+	{
+		y[ which(x==m[i]) ]<-i
+		
+	}
+	pp$types<-as.integer(y)
+	pp$marks<-NULL
 	
 	if(is.null(pp[["z"]]) || length(pp[["z"]])!=length(pp[["x"]])) pp$z<-rep(0.0,n) # if 2D only
 	if(is.null(pp[["window"]][["z"]])) pp$window$z<-as.numeric(c(0.0,1.0)) # if 2D only
-	pp$marks<-NULL
+	
 	pp$window$x<-as.numeric(pp$window$x)
 	pp$window$y<-as.numeric(pp$window$y)
 	pp$window$z<-as.numeric(pp$window$z)

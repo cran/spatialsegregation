@@ -20,7 +20,7 @@ std::vector<double> mingling(Graph *graph, double *fpar, int *dbg, int *included
 			if(graph->pp->lambdas[i]>0)
 			{
 				incS++;
-				a1[0] = (double) i+1;
+				a1[0] = (double) graph->pp->typevec.at(i);
 				value.push_back(mingling(graph, a1, dbg ,included).at(0));
 			}
 

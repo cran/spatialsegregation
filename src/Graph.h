@@ -24,12 +24,14 @@ public:
 	int    *gtype;
 	int    *prepDone, pdone;
 	std::vector<std::vector<int> > nodelist;
+	std::vector<std::vector<int> > *nodelistp;
 	double Dist(int *, int *);
 	Graph();
 	virtual ~Graph();
 
 	void Init(Pp *pp0, int *gtype0, double *par, double *prepR, int *doDists, int *toroidal, int *dbg );
 	void setNodelist(std::vector<std::vector<int> > *nodelist_new);
+	void setNodelist(SEXP prepGraph);
 	void addNew(int , int);
 	void sg_calc();
 

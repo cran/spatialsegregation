@@ -19,16 +19,16 @@ void Pp::Init(SEXP Argspp)
 	z = REAL(getListElement(Argspp, "z"));
 	type = INTEGER(getListElement(Argspp, "types"));
 	mass = REAL(getListElement(Argspp,"mass"));
-	std::vector<int> temp;
+	typevec.clear();
 	for(i=0;i<m;i++)
 	{
 		old = 0;
-		for(j=0;j<(int)temp.size();j++)
-			if(temp.at(j)==type[i]){ old = 1;break;}
+		for(j=0;j<(int)typevec.size();j++)
+			if(typevec.at(j)==type[i]){ old = 1;break;}
 		if(!old)
-			temp.push_back(type[i]);
+			typevec.push_back(type[i]);
 	}
-	s = temp.size();
+	s = typevec.size();
 	S = &s;
 	toroidal = 0;
 	xlim = REAL(getListElement(getListElement(Argspp, "window") ,"x"));
@@ -39,7 +39,7 @@ void Pp::Init(SEXP Argspp)
 	{
 		lambdas.push_back(0.0);
 		for(j=0;j<m;j++)
-			if(type[j]==i+1)
+			if(type[j]==typevec.at(i))
 				lambdas[i]=lambdas[i]+1.0;
 		lambdas[i]=lambdas[i]/Area;
 	}
@@ -54,18 +54,18 @@ void Pp::Init(double *x0, double *y0, double *z0, int *type0, double *mass0, int
 	x = x0;
 	y = y0;
 	z = z0;
-	std::vector<int> temp;
 	type =type0;
 	mass =mass0;
+	typevec.clear();
 	for(i=0;i<m;i++)
 	{
 		old = 0;
-		for(j=0;j<(int)temp.size();j++)
-			if(temp.at(j)==type[i]){ old = 1;break;}
+		for(j=0;j<(int)typevec.size();j++)
+			if(typevec.at(j)==type[i]){ old = 1;break;}
 		if(!old)
-			temp.push_back(type[i]);
+			typevec.push_back(type[i]);
 	}
-	s = temp.size();
+	s = typevec.size();
 	S = &s;
 
 	xlim = xlim0;
