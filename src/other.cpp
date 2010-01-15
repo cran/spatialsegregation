@@ -6,7 +6,7 @@
  *
  * ****************/
 
-#import "other.h"
+#include "other.h"
 
 /**********************************************************************************/
 int compare_doubles(const void *a, const void *b)

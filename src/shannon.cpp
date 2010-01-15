@@ -50,7 +50,7 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 {
 	if(*dbg)printf("piitau[");
 	int i,j,k,m,S=*graph->pp->S;
-	double piitauj, piitau[S];
+	double piitauj, *piitau = new double[S];
 	std::vector<double> value;
 	value.clear();
 
@@ -90,7 +90,7 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 std::vector<double> shannon_v2(Graph *graph, double *fpar, int *dbg, int *included)
 {
 	if(*dbg)printf("local entropies[");
-	int i,j,k, S=*graph->pp->S, Htau[S];
+	int i,j,k, S=*graph->pp->S, *Htau = new int[S];
 	double v, pii;
 	std::vector<int> counts;
 	std::vector<double> locpitau;

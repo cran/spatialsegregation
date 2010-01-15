@@ -248,7 +248,8 @@ void Graph::sg_knn()
 	if(*prepR==0)// if not preprocessed
 	{
 		if(*dbg)printf("%i-nn:",*k);
-		double dists2_i[*pp->n], dists2_i2[*pp->n];
+		double *dists2_i = new double[*pp->n];
+		double *dists2_i2 = new double[*pp->n];
 		for(i=0;i<*pp->n;i++) //for each point
 		{
 			for(j=0;j<*pp->n;j++) dists2_i2[j]=dists2_i[j]= Dist(&i,&j); //gather the distances to others
@@ -440,7 +441,7 @@ void Graph::sg_MST()
 {
   if(*this->dbg) printf("MST:");
   int i,j,k=0,l=0,zz,k0=0,l0=0;
-  int done[*this->pp->n],dn;
+  int *done = new int[*this->pp->n], dn;
   double apu0,apu1,apu2;
   done[0] = 0;
   dn = 1;
@@ -510,7 +511,7 @@ void Graph::sg_SIG()
 	{
 		dist = MAX_DOUBLE;
 		for(j=0;j<*pp->n;j++)
-			if(i!=j) dist = fminf(dist, Dist(&i,&j));
+			if(i!=j) dist = fmin(dist, Dist(&i,&j));
 		pp->mass[i]=dist;
 	}
 	*dbg=0;
@@ -587,7 +588,7 @@ void Graph::sg_CCC()
 		{
 			pp->mass[i]=MAX_DOUBLE;
 			for(j=0;j<*pp->n;j++)
-				if(j!=i & pp->type[j]!=type0) pp->mass[i]=fminf(pp->mass[i],Dist(&i,&j));
+				if(j!=i & pp->type[j]!=type0) pp->mass[i]=fmin(pp->mass[i],Dist(&i,&j));
 		}
 	}
 	for(i=0;i<*pp->n;i++) //TODO: optimize this

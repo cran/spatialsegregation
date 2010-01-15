@@ -1,8 +1,8 @@
 Package: spatialsegregation
 Type: Package
 Title: Segregation measures for multitype spatial point patterns
-Version: 2.11
-Date: 2009-09-28
+Version: 2.12
+Date: 2010-01-15
 Author: Tuomas Rajala
 Maintainer: Tuomas Rajala <tuomas.a.rajala@jyu.fi>
 Suggests:
@@ -14,6 +14,6 @@ Description: Summaries for measuring segregation/mingling in multitype
         Simpson, ISAR. Included neighbourhoods: Geometric, k-nearest
         neighbours, Gabriel, Delauney.
 License: GPL (>= 2.0)
-Packaged: 2009-09-28 06:14:36 UTC; tarajala
+Packaged: 2010-01-15 15:12:57 UTC; tarajala
 Repository: CRAN
-Date/Publication: 2009-09-28 07:51:41
+Date/Publication: 2010-01-15 16:26:18

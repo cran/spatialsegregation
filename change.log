@@ -1,3 +1,7 @@
+2.12:
+ - fix sun compiler errors with variable vector size 
+ - fix #import instead of #include in other.cpp. Apparently GNU-compiler likes snakes.
+ 
 2.11:
  - remove 1 of the duplications of prepGraph
  - fixed a bug with the marks: not properly mapped if not integer-factors. Now works.

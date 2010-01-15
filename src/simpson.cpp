@@ -34,7 +34,8 @@ std::vector<double> simpson_typewise(Graph *graph, double *fpar, int *dbg, int *
 
 	int n=graph->nodelist.size(),i,j,k,m,*S, N=0;
 	S = graph->pp->S;
-	double piitautau[*S], piitautaui, lambda0=0.0,ptau, bardeg=0.0, bardegtautau[*S], bardegtautaui;
+	double *piitautau = new double[*S], piitautaui, lambda0=0.0;
+	double ptau, bardeg=0.0, *bardegtautau = new double[*S], bardegtautaui;
 	std::vector<double> value;
 
 	for(i=0;i<*S;i++)// compute overall intensity&format barpii_tau
