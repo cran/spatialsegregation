@@ -1,3 +1,5 @@
+2.13:
+ - fix some more sun compiler errors: added fmin-function to others.cpp, for some reason is not defined in non-GNU math.h
 2.12:
  - fix sun compiler errors with variable vector size 
  - fix #import instead of #include in other.cpp. Apparently GNU-compiler likes snakes.

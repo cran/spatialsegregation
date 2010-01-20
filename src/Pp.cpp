@@ -102,9 +102,9 @@ double Pp::Dist1(int *i, int *j)
 	if(*i>*j) return Dist1(j, i);
 	if(this->toroidal)
 		return	sqrt(
-					pow( fminf( this->xlim[1]-this->xlim[0]-fabs(this->x[*i]-this->x[*j]) , fabs(this->x[*i]-this->x[*j]) ) ,2.0) +
-					pow( fminf( this->ylim[1]-this->ylim[0]-fabs(this->y[*i]-this->y[*j]) , fabs(this->y[*i]-this->y[*j]) ) ,2.0) +
-					pow( fminf( this->zlim[1]-this->zlim[0]-fabs(this->z[*i]-this->z[*j]) , fabs(this->z[*i]-this->z[*j]) ) ,2.0)   );
+					pow( fmin( this->xlim[1]-this->xlim[0]-fabs(this->x[*i]-this->x[*j]) , fabs(this->x[*i]-this->x[*j]) ) ,2.0) +
+					pow( fmin( this->ylim[1]-this->ylim[0]-fabs(this->y[*i]-this->y[*j]) , fabs(this->y[*i]-this->y[*j]) ) ,2.0) +
+					pow( fmin( this->zlim[1]-this->zlim[0]-fabs(this->z[*i]-this->z[*j]) , fabs(this->z[*i]-this->z[*j]) ) ,2.0)   );
 	else
 		return 	sqrt(
 				pow( this->x[*i]- this->x[*j]  ,2.0) +

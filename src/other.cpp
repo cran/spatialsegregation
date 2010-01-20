@@ -56,3 +56,8 @@ int Empty(double *x, double *y, int *n, int i, int j, int k, double *x00, double
 	return 1;
 }
 /**********************************************************************************/
+double fmin(double a, double b)
+{
+	if(a < b) return a;
+	else return b;
+}
