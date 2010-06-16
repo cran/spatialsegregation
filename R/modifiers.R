@@ -29,10 +29,10 @@ shake<-function(pp, a=0.001)
 	pp
 }
 ####################################################################################
-minusID<-function(pp, minusR, dbh=0, atleast=0)
+minusID<-function(pp, minusR, dbh, atleast=0)
 {
 	id<-( pp$x<(pp$window$x[2]-minusR) ) & (pp$x>(pp$window$x[1]+minusR)) & (pp$y<(pp$window$y[2]-minusR)) & (pp$y>(pp$window$y[1]+minusR)) 
-	if(!is.null(pp$dbh))
+	if(!is.null(pp$dbh) & !missing(dbh))
 		id<-id & pp$dbh>dbh
 	if(atleast>0)
 	{

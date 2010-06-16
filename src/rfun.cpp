@@ -18,10 +18,12 @@ SEXP fun_c(SEXP Args)
 	Pp pp;
 	Graph graph;
 	Fun fun;
-	double *prepR, *fpar, *par, *parvec;
+	double *prepR, *fpar, *par, *parvec, *d0;
 	int *gtype, *doDists, *toroidal, *ftype, *dbg, parn, *incl, prepG=0, *prepGraphIsTarget;
 	SEXP prepGraph;
 
+	d0 = new double;
+	d0[0] =-1.0;
 //start parsing the args
 	Args = CDR(Args);
 	dbg = INTEGER(CAR(Args)); // if debug messages
@@ -78,9 +80,8 @@ SEXP fun_c(SEXP Args)
 
 
 
-	//	void Init(Pp *pp0, double *par, double *prepR, int *doDists, int *toroidal, int *dbg );
 	if(*dbg)printf("Init graph...");
-	graph.Init(&pp, gtype, par, prepR , doDists, toroidal, dbg);
+	graph.Init(&pp, gtype, par, prepR , doDists, d0, toroidal, incl, dbg);
 	if(prepG)// if precalculated graph, set the edges, overrule the prepR-parameter
 	{
 		if(*dbg)printf("loading precalculated edges...");
@@ -91,17 +92,14 @@ SEXP fun_c(SEXP Args)
 		graph.setNodelist(prepGraph);
 		graph.prepR = REAL(getListElement(prepGraph,"parameters"));
 		*graph.oldpar = *graph.prepR;
-		*graph.prepDone = 1;
 	}
 
-
-
-	//	void Init(Graph *g0, double *par0, int *parn, int *gt, int *ft, double *fpar, int *dbg0);
 	if(*dbg)printf("Init fun...");
 	fun.Init(&graph, parvec, &parn, gtype, ftype, fpar, incl, dbg);
 	if(*dbg)printf("done.\n");
-	if(*dbg)printf("Calculating:\n");
 
+
+	if(*dbg)printf("Calculating:\n");
 	if(*prepGraphIsTarget){ fun.re_calculate(); }
 	else{  fun.calculate();  }
 

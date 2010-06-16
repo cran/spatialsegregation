@@ -1,9 +1,9 @@
 #the generic function for segregation measures
-# isarF, minglingF, shannonF and simpsonF
+# isarF, minglingF, shannonF, simpsonF and mciF
 #  are the wrappers that should be used.
 #
-#Tuomas Rajala <tuomas.a.rajala@jyu.fi>
-# last change : 060909 
+#Tuomas Rajala <tuomas.rajala@jyu.fi>
+# last change : 280410 
 #################################################
 #constant: the supported neighbourhoods
 kGraphs<-c("geometric","knn","gabriel","delauney")
@@ -16,6 +16,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 #   2 shannon
 #   3 simpson
 #   4 ISAR
+#	5 MCI
 
 {
 	# a note about the neighbourhoods
@@ -59,7 +60,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 	if(!is.null(prepGraph)) note<-c(note,paste("PrepGraph given, type ",prepGraph$gtype,", par ",prepGraph$par,sep=""))
 	
 	# turn the wanted function type into an integer
-	funi <- charmatch(fun, (kFuns<-c("mingling","shannon","simpson","isar")))
+	funi <- charmatch(fun, (kFuns<-c("mingling","shannon","simpson","isar","mci")))
 	if(is.na(funi)) stop("Error segregationFun: wrong function type.")
 	
 	# TODO: modify the pp, see below in the function	
@@ -76,10 +77,21 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 	
 	# check if the prepGraph is given when used as the target neighbourhood configuration
 	if(prepGraphIsTarget && is.null(prepGraph)) stop("Error segregationFun: prepGraph not given but needed for calculation.")
-	
+		
 	# this is for the c-side check to know if we are giving a prepGraph
 	prepGraph$'isnull'<- as.integer(is.null(prepGraph))
+	
+	# set parameters according to prepGraph
+	if(prepGraphIsTarget)
+	{
+		parvec<-prepGraph$parameters
+		ntype<-prepGraph$type
+	}
 		
+	
+	# include lambdas
+	X$area<-as.numeric(area.owin(X$window))
+	
 	# the main call 
 	res<-.External("fun_c", as.integer(dbg), X, as.numeric(funpars), 
 					as.integer(ntypei), as.numeric(parvec), 
@@ -89,7 +101,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 					as.integer(prepGraphIsTarget),
 					PACKAGE="spatialsegregation")
 
-	# turn the variable size result list into an matrix: 1 col per valuetype, 1 row per parameter
+	# turn the result list into a matrix: 1 col per valuetype, 1 row per parameter
 	a<-t(matrix(unlist(res),ncol=length(parvec)))
 
 	# name the rows par1, par2, ...
@@ -97,7 +109,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
  
 	# the unit name: different from Kest etc, reports the meaning of the unit depending on -
 	#   the neighbourhood type
-	unitname<-switch(ntype,"geometric"="range","knn"="neighbour",NULL)
+	unitname<-switch(ntypei,"1"="range","2"="neighbour",NULL)
 	
 	list(v=a, included=as.logical(included), 
 		 parvec=parvec, unitname=unitname, 
@@ -120,7 +132,8 @@ minusID.gf<- function (pp0, minusRange)
 sg.modify.pp<-function(pp)
 {
 	n<-length(pp[["x"]])
-	if(length(pp[["mass"]]) < n ) # set the masses
+	
+	if(length(pp[["mass"]]) != n ) # set the masses
 	{
 		if(length(pp[["marks"]])< n | !is.numeric(pp[["marks"]])) pp$mass<-rep(1.0,n)
 		else pp$mass<-pp$marks
@@ -129,13 +142,12 @@ sg.modify.pp<-function(pp)
 	
 	if(length(pp[["types"]]) < n) # set the types
 	{
-		if( (is.factor(pp$marks) | is.integer(pp$marks)) & length(pp[["marks"]])==n ) x<-pp$marks 
-		else x<-rep(1,n)
+		if( (is.factor(pp$marks) | (is.integer(pp$marks)) & length(pp[["marks"]])==n) ) x<-as.factor(pp$marks) 
+		else x<-as.factor(rep(1,n))
 	}
-	else x<-pp$types
-	
-	y<-as.integer(x)
-	m<-union(x,NULL)
+	else x<-as.factor(pp$types)
+	y<-rep(1,n)
+	m<-levels(x)
 	for(i in 1:length(m))
 	{
 		y[ which(x==m[i]) ]<-i
@@ -152,7 +164,7 @@ sg.modify.pp<-function(pp)
 	pp$window$z<-as.numeric(pp$window$z)
 	pp$x<-as.numeric(pp$x)
 	pp$y<-as.numeric(pp$y)
-	pp$z<-as.numeric(pp$z)
+	pp$z<-as.numeric(pp$z)	
 	pp
 }
 

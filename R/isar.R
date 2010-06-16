@@ -32,7 +32,8 @@ isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
 	# else convert to an integer
 	else
 	{
-		targeti<- which( levels(X$marks)  == target)
+#		targeti<- which( levels(X$marks)  == target)
+		targeti<-which( union(X$marks, NULL) == target)
 		if(length(targeti)!=1) stop("Target type not one of pattern types.")
 	}
 	
@@ -46,14 +47,18 @@ isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
 	# theoretical values in CSR: depends on the neighbourhood type
 	ntype<-res$ntype
 	mdeg<-function(l,k)c( pi*l*k^2, k, 4, 6)[charmatch(ntype, kGraphs)]
-	#    get the intensities
+	
+	# get the intensities
 	sum0<-summary(X)
-	l<-sum0$marks[,3]
+	omarks<-order(union(X$marks,NULL)) # right order of marks
+	l<-sum0$marks[,3][omarks]
 	#    calc the theoretical values, also for the degree weighted version
 	theo<-NULL
 	for(para in res$parvec)theo<-
 				c(theo,
-				sum(1-(1-l/sum(l))^mdeg(sum(l),para) )/ifelse(v2,mdeg(sum(l),para),1))
+				  sum(1-exp(-mdeg(sum(l),para)*l/sum(l))) / ifelse(v2,mdeg(sum(l),para),1))
+#				sum(1-(1-l/sum(l))^mdeg(sum(l),para) )/ifelse(v2,mdeg(sum(l),para),1))
+										
 		
 	# create the fv-object
 	isar.final<-fv(data.frame(theo=theo,par=res$parvec), 

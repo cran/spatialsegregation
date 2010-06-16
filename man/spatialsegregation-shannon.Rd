@@ -1,4 +1,4 @@
-\name{spatialsegregation-shannon}
+\name{shannonF}
 \alias{shannonF}
 \alias{shannon.index}
 \docType{package}
@@ -11,14 +11,9 @@ Compute the spatial and aspatial Shannon index for a given multitype point patte
 
 
 \details{
-  \tabular{ll}{
-    Date: \tab 2009-09-06\cr
-    License: \tab GPL v2 or later\cr
-  }
-
 The form of Shannon index is  \var{H = 1 - E(o)/E(N)}, where \var{E(N)} is the global entropy and \var{E(o)} is the local entropy 
-calculated as \var{E(o)= - sum pi_tau log(pi_tau)}, where the sum is over the types of the pattern, and \var{pi_tau} is 
-the expected relative frequency of type \var{tau} points in a neighbourhood of a typical point of the pattern. 
+calculated as \var{E(o)= - sum pi_tau log(pi_tau)}, where the sum is over the different types present in the pattern, and \var{pi_tau} is 
+the expected frequency of type \var{tau} points in a neighbourhood of a typical point of the pattern. 
 
 The function \code{shannonF} is the calculation function. Uses function \code{\link{segregationFun}}. 
 
@@ -48,7 +43,7 @@ University of Jyvaskyla, Finland
 tuomas.a.rajala@jyu.fi
 }
 \references{
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2009.
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
 
 Reardon, O'sullivan: Measures of spatial segregation. Sociological methodology, 34:121-162, 2004.
 }

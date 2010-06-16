@@ -9,7 +9,7 @@ std::vector<double> isar(Graph *graph, double *fpar, int *dbg, int *included)
 std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *included)
 {
 	if(*dbg)printf("isar[type=%i",(int) fpar[0]);
-	int i, j, n, k, m, dbg0;
+	int i, j, n, k,l, m, dbg0;
 	double a1[1];
 	std::vector<double> value;
 	value.clear();
@@ -18,11 +18,11 @@ std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *inclu
 	{
 		dbg0 = *dbg;
 		*dbg = 0;
-		for(i=0;i< *graph->pp->S;i++)
+		for(i=0;i< graph->pp->getNtypes();i++)
 		{
-			if(graph->pp->lambdas[i]>0)
+			if(graph->typeIncluded.at(i))
 			{
-				a1[0] = (double) graph->pp->typevec.at(i);
+				a1[0] = (double) graph->pp->getTypevec(&i);
 				value.push_back(isar_normal(graph,a1,dbg,included).at(0));
 			}
 		}
@@ -32,19 +32,19 @@ std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *inclu
 	{
 		int target_type = (int) fpar[0];
 		value.push_back(0.0);
-		for(j=0; j< *graph->pp->S;j++) // sum over all species
+		for(j=0; j< graph->pp->getNtypes();j++) // sum over all species
 		{
-
 			n=0;
 			m=0;
 			for(i=0;i< (int)graph->nodelist.size();i++) //sum over target species...
 			{
-				if(included[i] && graph->pp->type[i]==target_type) //...
+				if(included[i] && graph->pp->getT(&i)==target_type) //...
 				{
 					n++;
 					for(k=0;k < (int)graph->nodelist[i].size();k++)  // check if type j present
 					{
-						if(graph->pp->type[graph->nodelist[i][k]-1]==j+1)
+						l = graph->nodelist[i][k]-1;
+						if(graph->pp->getT(&l)==graph->pp->getTypevec(&j))
 						{
 							m++;
 							break;
@@ -63,7 +63,7 @@ std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *inclu
 std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *included)
 {
 	if(*dbg)printf("isar (degree weighted)[type=%i",(int) fpar[0]);
-	int i, j, n, k, m, dbg0;
+	int i, j, n, k,l, m, dbg0;
 	double a1[1];
 	std::vector<double> value;
 	value.clear();
@@ -72,11 +72,11 @@ std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *include
 	{
 		dbg0 = *dbg;
 		*dbg = 0;
-		for(i=0;i< *graph->pp->S;i++)
+		for(i=0;i< graph->pp->getNtypes();i++)
 		{
 			if(graph->pp->lambdas[i]>0)
 			{
-				a1[0] = (double) graph->pp->typevec.at(i);
+				a1[0] = (double) graph->pp->getTypevec(&i);
 				value.push_back(isar_wdeg(graph,a1,dbg,included).at(0));
 			}
 		}
@@ -89,15 +89,16 @@ std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *include
 		n=0;
 		for(i=0;i< (int)graph->nodelist.size();i++) //sum over target species...
 		{
-			if(included[i] && graph->pp->type[i]==target_type) //...
+			if(included[i] && graph->pp->getT(&i)==target_type) //...
 			{
 				m=0;
 				n++;
-				for(j=0; j< *graph->pp->S;j++) // sum over all species
+				for(j=0; j< graph->pp->getNtypes();j++) // sum over all species
 				{
 					for(k=0;k < (int)graph->nodelist[i].size();k++)  // check if type j present
 					{
-						if(graph->pp->type[graph->nodelist[i][k]-1]==j+1) // if i's neighbour k is of type j
+						l = graph->nodelist[i][k]-1;
+						if(graph->pp->getT(&l)==graph->pp->getTypevec(&j)) // if i's neighbour k is of type j
 						{
 							m++;
 							break;
@@ -119,7 +120,7 @@ std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *include
 std::vector<double> isar_markweighted(Graph *graph, double *fpar, int *dbg, int *included)
 {
 	if(*dbg)printf("isar (mass weighted)[type=%i",(int) fpar[0]);
-	int i, j, n, k, m, dbg0;
+	int i, j, n, k, l, m, dbg0;
 	double a1[1];
 	std::vector<double> value;
 	value.clear();
@@ -128,7 +129,7 @@ std::vector<double> isar_markweighted(Graph *graph, double *fpar, int *dbg, int 
 	{
 		dbg0 = *dbg;
 		*dbg = 0;
-		for(i=0;i< *graph->pp->S;i++)
+		for(i=0;i< graph->pp->getNtypes();i++)
 		{
 			if(graph->pp->lambdas[i]>0)
 			{
@@ -145,15 +146,16 @@ std::vector<double> isar_markweighted(Graph *graph, double *fpar, int *dbg, int 
 		n=0;
 		for(i=0;i< (int)graph->nodelist.size();i++) //sum over target species...
 		{
-			if(included[i] && graph->pp->type[i]==target_type) //...
+			if(included[i] && graph->pp->getT(&i)==target_type) //...
 			{
 				m=0;
 				n++;
-				for(j=0; j< *graph->pp->S;j++) // sum over all species
+				for(j=0; j< graph->pp->getNtypes();j++) // sum over all species
 				{
 					for(k=0;k < (int)graph->nodelist[i].size();k++)  // check if type j present
 					{
-						if(graph->pp->type[graph->nodelist[i][k]-1]==j+1) // if i's neighbour k is of type j
+						l = graph->nodelist[i][k]-1;
+						if(graph->pp->getT(&l)==graph->pp->getTypevec(&j)) // if i's neighbour k is of type j
 						{
 							m++;
 							break;

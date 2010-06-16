@@ -2,7 +2,7 @@
 # 
 # function class for easy plotting
 #
-# Note 060909: From 2.10 on this class is obsolete!
+# Note 060909: From 2.10 on this class is obsolete, we use spatstat's fv-class!
 #
 # Author: Tuomas Rajala <tarajala@maths.jyu.fi>
 ###############################################################################

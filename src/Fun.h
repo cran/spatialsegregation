@@ -4,12 +4,13 @@
  *        2   shannon
  *        3   simpson
  *        4   ISAR
+ *        5   MCI
  *
  * Supports Geometric and k-nn graphs, and toroidal correction
  * TODO: border correction
  * by: Tuomas Rajala
  *
- * 	300508
+ * 	280410
  *
  */
 #include <R.h>
@@ -19,6 +20,7 @@
 #include "shannon.h"
 #include "simpson.h"
 #include "isar.h"
+#include "mci.h"
 #include "mean_sd.h"
 #ifndef FUN_H_
 #define FUN_H_
@@ -33,6 +35,7 @@ class Fun
 	int *ftype;
 	int *included;
 	double *fpar;
+
 	int *dbg;
 
 public:

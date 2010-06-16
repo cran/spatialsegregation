@@ -11,7 +11,7 @@ Fun::~Fun()
 
 void Fun::Init(Graph *g0, double *par0, int *parn, int *gt, int *ft, double *fpar0, int *included0, int *dbg0)
 {
-	int i,j,empty;
+	int i;
 	graph = g0;
 	std::vector<double> * pvec;
 	for(i=0;i<*parn;i++)
@@ -26,18 +26,6 @@ void Fun::Init(Graph *g0, double *par0, int *parn, int *gt, int *ft, double *fpa
 	ftype = ft;
 	fpar = fpar0;
 	dbg = dbg0;
-
-	for(i=0; i< *graph->pp->S;i++)//need to put 0 to some lambdas based on the inclusion vector
-	{
-		empty=1;
-		for(j=0;j<*graph->pp->n;j++)
-			if(graph->pp->type[j]==i+1 && included[j])
-			{
-				empty=0;
-				break;
-			}
-		if(empty)graph->pp->lambdas[i]=0.0;
-	}
 }
 
 
@@ -87,6 +75,8 @@ void Fun::calculate()
 			resvec = simpson(graph, fpar, dbg, included);
 		if(*ftype == 4)
 			resvec = isar(graph, fpar, dbg, included);
+		if(*ftype == 5)
+			resvec = mci(graph, fpar, dbg, included);
 		value.at(i) = resvec;
 		if(*this->dbg)printf(" ]\n");
 	}
@@ -105,7 +95,9 @@ void Fun::re_calculate()
 			resvec = simpson(graph, fpar, dbg, included);
 		if(*ftype == 4)
 			resvec = isar(graph, fpar, dbg, included);
-			value.at(0) = resvec;
+		if(*ftype == 5)
+			resvec = mci(graph, fpar, dbg, included);
+		value.at(0) = resvec;
 		if(*this->dbg)printf(" ]\n");
 }
 

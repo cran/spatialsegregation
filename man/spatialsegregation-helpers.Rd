@@ -1,4 +1,4 @@
-\name{spatialsegregation-helpers}
+\name{helper functions}
 \alias{clean.up.data}
 \alias{freqs}
 \alias{minusID}
@@ -9,17 +9,24 @@
 
 \description{
 Small functions included in package \code{spatialsegregation}, used for manipulation of forest datasets which
-have dbh-values (pp with a component dbh).
+have dbh-values (pp with an element $dbh).
 }
 
+\usage{
+ clean.up.data(pp, dbh = 10, atleast = 10)
+ freqs(pp)
+ minusID(pp, minusR, dbh, atleast=0)
+ shake(pp, a = 0.001)
+}
+\arguments{
+\item{pp}{Multitype point pattern (see package 'spatstat')}
+\item{atleast}{Include specii with abundance atleast \code{atleast}.}
+\item{dbh}{Include only those points with dbh atleast \code{dbh}.}
+\item{minusR}{Range from the border withing which to exluce points (used for correction of estimates).}
+\item{a}{Size of displacement: x+Unif(-a,a), y+Unif(-a,a). }
+}
 
 \details{
-
-  \tabular{ll}{
-    Date: \tab 2009-04-03\cr
-    License: \tab GPL v2 or later\cr
-  }
-
 Small functions to manipulate multitype point patterns.
 
 \code{clean.up.data}: Returns a subsample fullfilling the given constrains.
@@ -31,24 +38,10 @@ Small functions to manipulate multitype point patterns.
 \code{shake}: Shakes the pattern, i.e. adds a random displacement shift to each point.
 }
 
-\usage{
- clean.up.data(pp, dbh = 10, atleast = 10)
- freqs(pp)
- minusID(pp, minusR, dbh = 0, atleast = 0)
- shake(pp, a = 0.001)
-}
-\arguments{
-\item{pp}{Multitype point pattern (see package 'spatstat')}
-\item{atleast}{Include specii with abundance atleast \code{atleast}.}
-\item{dbh}{Include only those points with dbh atleast \code{dbh}.}
-\item{minusR}{Range from the border withing which to exluce points (used for correction of estimates).}
-\item{a}{Size of displacement: x+Unif(-a,a), y+Unif(-a,a). }
-}
-
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tarajala@maths.jyu.fi
+tuomas.rajala@jyu.fi
 }
 
 \keyword{ spatial }

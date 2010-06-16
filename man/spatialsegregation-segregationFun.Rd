@@ -56,10 +56,6 @@ For border correction, use \code{minusRange} for reduced border correction (for 
 the option \code{toroidal} for toroidal correction is also available. The vector \code{included} can be given for more specific \code{minus}-correction,
 only those points with TRUE (1) value are used in calculation. However, the neighbourhoods are calculated with all points.
 
-  \tabular{ll}{
-    Date: \tab 2009-09-06\cr
-    License: \tab GPL v2 or later\cr
-  }
 }
 
 

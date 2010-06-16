@@ -32,13 +32,13 @@ std::vector<double> simpson_typewise(Graph *graph, double *fpar, int *dbg, int *
 {
 	if(*dbg)printf("typewise[");
 
-	int n=graph->nodelist.size(),i,j,k,m,*S, N=0;
-	S = graph->pp->S;
-	double *piitautau = new double[*S], piitautaui, lambda0=0.0;
-	double ptau, bardeg=0.0, *bardegtautau = new double[*S], bardegtautaui;
+	int n=graph->nodelist.size(),i,j,k,l, m,S, N=0;
+	S = graph->pp->getNtypes();
+	double *piitautau = new double[S], piitautaui, lambda0=0.0;
+	double ptau, bardeg=0.0, *bardegtautau = new double[S], bardegtautaui;
 	std::vector<double> value;
 
-	for(i=0;i<*S;i++)// compute overall intensity&format barpii_tau
+	for(i=0;i<S;i++)// compute overall intensity&format barpii_tau
 	{
 		lambda0= lambda0 + graph->pp->lambdas[i];
 		piitautau[i]=0.0;
@@ -46,7 +46,7 @@ std::vector<double> simpson_typewise(Graph *graph, double *fpar, int *dbg, int *
 		m = 0;
 		for(j=0;j<n;j++) // first the piitau for each tau node...
 		{
-		  if(included[j] && graph->pp->type[j]==i+1)// in our minus-sample and i of tau type
+		  if(included[j] && graph->pp->getT(&j)==graph->pp->getTypevec(&i))// in our minus-sample and i of tau type
 		  {
 			  bardeg = bardeg + (double) graph->nodelist.at(j).size();
 			  N = N+1;
@@ -57,7 +57,8 @@ std::vector<double> simpson_typewise(Graph *graph, double *fpar, int *dbg, int *
 			  {
 				  for(k=0;k<(int)graph->nodelist.at(j).size(); k++)
 				  {
-					  if(graph->pp->type[graph->nodelist.at(j).at(k)-1]==i+1)
+					  l = graph->nodelist.at(j).at(k)-1;
+					  if(graph->pp->getT(&l)==graph->pp->getTypevec(&i))
 					  {
 						  piitautaui = piitautaui + 1;               // TODO: add the mass
 						  bardegtautaui = bardegtautaui + 1;
@@ -80,7 +81,7 @@ std::vector<double> simpson_typewise(Graph *graph, double *fpar, int *dbg, int *
 //	value = 0.0;
 	value.resize(0);
 	//and finally the estimate
-	for(i=0;i<*S;i++)
+	for(i=0;i<S;i++)
 	{
 		if(graph->pp->lambdas[i]>0)
 		{

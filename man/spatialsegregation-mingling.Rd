@@ -1,4 +1,4 @@
-\name{spatialsegregation-mingling}
+\name{minglingF}
 \alias{minglingF}
 \alias{mingling.index}
 
@@ -9,12 +9,6 @@ Compute the Mingling index for a given multitype point pattern.
 
 
 \details{
-  \tabular{ll}{
-    Date: \tab 2009-09-06\cr
-    License: \tab GPL v2 or later\cr
-  }
-
-
 Extension of Mingling index introduced by Lewandowski\&Pommerening 1997. Measures the proportion of alien points in
 the neighbourhood of a specific type typical point of the pattern.
 
@@ -53,7 +47,7 @@ Graz: The behaviour of the species mingling index \code{$m_{sp}$} in relation to
 
 Lewandowski, Pommerening: Zur Beschreibung der Waldstruktur - Erwartete und beobachtete Arten-Durchmischung. Forstwiss Centralbl, 116:129-139, 1997.
 
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2009.
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
 }
 
 \keyword{ package }

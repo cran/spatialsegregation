@@ -1,5 +1,6 @@
-#040808
-
+#280410
+ - Podani&Czaran-indeksi
+ 
  - Mingling:
  +   - palauttaa listan jossa typewise arvot
  - ISAR:

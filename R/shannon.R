@@ -17,14 +17,15 @@ shannonF<-function(X, r=NULL, v2=FALSE, ...)
 	# calc the aspatial (global) entropy i.e. shannon index
 	eglobal <- -shannon.index(X,spatial=FALSE)
 	
-	# a function to calculate the -pi_tau*log(pi_tau) -sum
+	# a function to calculate  -1*sum( pi_tau*log(pi_tau) )
 	f<-function(pvec) 
 	{
-		a<-0
+		E1<-0
+		pvec<-pvec/sum(pvec)
 		S<-length(pvec)
-		for(i in 1:S)
-			a<-a + ifelse(pvec[i]>0, pvec[i]*log(pvec[i],base=S), 0)
-		(1-a/eglobal)
+		ok<-pvec>0
+		E1 <- sum(pvec[ok]*log(pvec[ok],base=S))
+		(1-E1/eglobal)
 	}
 	
 	# if we take the log base as the individual degree instead of total S -
@@ -56,8 +57,8 @@ shannonF<-function(X, r=NULL, v2=FALSE, ...)
 					 fname=desc
 					 )
 	
-	# add the typewise values of which the index is a summary
-	attr(shannon.final,"typewise")<- -res$v
+	# add the typewise pii_tau values of which the index is a summary
+	attr(shannon.final,"typewise")<- res$v
 	
 	# add the global index value too
 	attr(shannon.final,"Aspatial Shannon index")<--eglobal

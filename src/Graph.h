@@ -4,7 +4,6 @@
 #include <math.h>
 #include <vector>
 #include "Pp.h"
-#include "other.h"
 
 #ifndef GRAPH_H_
 #define GRAPH_H_
@@ -18,20 +17,19 @@ public:
 	double opar;
 	double *oldpar;
 	int	   *doDists;
-	int    *toroidal;
 	int    *dbg;
 	double *prepR;
 	int    *gtype;
-	int    *prepDone, pdone;
+	int    *inc;
+	double  mdeg;
 	std::vector<std::vector<int> > nodelist;
-	std::vector<std::vector<int> > *nodelistp;
-	double Dist(int *, int *);
+	std::vector<int> typeIncluded;
 	Graph();
 	virtual ~Graph();
 
-	void Init(Pp *pp0, int *gtype0, double *par, double *prepR, int *doDists, int *toroidal, int *dbg );
+	void Init(Pp *pp0, int *gtype0, double *par, double *prepR, int *doDists, double *preDists, int *toroidal, int *inc, int *dbg );
 	void setNodelist(std::vector<std::vector<int> > *nodelist_new);
-	void setNodelist(SEXP prepGraph);
+	void setNodelist(SEXP);
 	void addNew(int , int);
 	void sg_calc();
 
@@ -42,13 +40,14 @@ public:
 	void sg_knn();
 	void sg_shrink_knn();
 	void sg_gabriel();
-	void sg_delauney();
+	void sg_delaunay();
 	void sg_MST();
 	void sg_markcross();
 	void sg_SIG();
 	void sg_RST();
 	void sg_RNG();
 	void sg_CCC();
+	void sg_STIR();
 
 	void sg_cut(double *R);
 	void sg_prune(double *lev);
@@ -57,5 +56,8 @@ public:
 	void remove_duplicates();
 	SEXP toSEXP();
 };
+
+int compare_doubles(const void *a, const void *b);
+double Attenuate(double r, double alpha); // used by STIR graph
 
 #endif /*GRAPH_H_*/

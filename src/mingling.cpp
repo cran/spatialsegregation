@@ -5,7 +5,7 @@ std::vector<double> mingling(Graph *graph, double *fpar, int *dbg, int *included
 {
 	if(*dbg)printf("mingling[");
 	int target_type;
-	int i,j,n=0,m,neq, dbg0, incS=0;
+	int i,j,k,n=0,m,neq, dbg0;
 	double a1[2];
 	std::vector<double> value;
 	value.clear();
@@ -15,17 +15,15 @@ std::vector<double> mingling(Graph *graph, double *fpar, int *dbg, int *included
 		dbg0 = *dbg;
 		*dbg = 0;
 		a1[1] = fpar[1];
-		for(i=0;i< *graph->pp->S;i++)
+		for(i=0;i< graph->pp->getNtypes();i++)
 		{
-			if(graph->pp->lambdas[i]>0)
+			if(graph->typeIncluded.at(i))
 			{
-				incS++;
-				a1[0] = (double) graph->pp->typevec.at(i);
+				a1[0] = (double) graph->pp->getTypevec(&i);
 				value.push_back(mingling(graph, a1, dbg ,included).at(0));
 			}
 
 		}
-		//M = M/((double) incS);
 		*dbg = dbg0;
 	}
 	else // target type given
@@ -33,15 +31,18 @@ std::vector<double> mingling(Graph *graph, double *fpar, int *dbg, int *included
 		target_type = (int) fpar[0];
 		value.push_back(0.0);
 		for(i=0;i< (int)graph->nodelist.size() ;i++)
-			if(included[i] &&  graph->pp->type[i] == target_type)
+			if(included[i] &&  graph->pp->getT(&i) == target_type)
 			{
-				n=n+1;
 				neq = 0;
-				m=graph->nodelist[i].size();
+				m = graph->nodelist[i].size();
 				if(m>0)
 				{
+					n++;
 					for(j=0;j<m;j++)
-						if(target_type != graph->pp->type[graph->nodelist[i][j]-1]) neq=neq+1;
+					{
+						k = graph->nodelist[i][j]-1;
+						if(target_type != graph->pp->getT(&k)) neq=neq+1;
+					}
 					value.at(0) = value.at(0) + (double) neq/(double) m;
 				}
 			}
@@ -49,9 +50,9 @@ std::vector<double> mingling(Graph *graph, double *fpar, int *dbg, int *included
 		if(fpar[1]>0) // ratio version (1-M)/ (lambda_t/lambda)
 		{
 			if(*dbg)printf("M=%1.3f -> ",value.at(0));
-			double lambda=0.0,ala;
-			for(i=0; i<*graph->pp->S;i++) lambda = lambda + graph->pp->lambdas[i];
-			ala = graph->pp->lambdas[target_type-1] / lambda;
+			double lambda=0.0, ala;
+			for(i=0;i < graph->pp->getNtypes(); i++) if(graph->pp->getTypevec(&i) == target_type) break;
+			ala = graph->pp->lambdas[i] / graph->pp->lambda;
 			value.at(0) = (1.0-value.at(0))/(double)ala;
 			if(*dbg)printf("%1.3f",value.at(0));
 		}

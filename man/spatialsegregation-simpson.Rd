@@ -1,4 +1,4 @@
-\name{spatialsegregation-simpson}
+\name{simpsonF}
 \alias{simpsonF}
 \alias{simpson.index}
 \docType{package}
@@ -10,12 +10,6 @@ Compute the spatial and aspatial Simpson index for a given multitype point patte
 
 
 \details{
-  \tabular{ll}{
-    Date: \tab 2009-03-09\cr
-    License: \tab GPL v2 or later\cr
-  }
-
-
 The form of Simpson index is  \var{S = 1 - sum pi_tau}, where the sum is over the types of the pattern, and \var{pi_tau} is like
 in Shimatani\& Kubota 2004.
 
@@ -48,7 +42,7 @@ University of Jyvaskyla, Finland
 tuomas.a.rajala@jyu.fi
 }
 \references{
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2009.
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
 
 Shimatani, Kubota: Quantitative assesment of multispecies spatial pattern with high species diversity. Ecological Research, 19, 2004.
 }

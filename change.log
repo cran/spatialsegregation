@@ -1,3 +1,20 @@
+2.18:
+ - fix documentation
+ 
+2.17:
+ - fixed shannon index calc: didn't have pi-values summing to 1. 
+ 
+2.16:
+ - fixed a BIG bug: ppp-object mark levels sometimes sorted, sometimes not!
+ - fixed a bug with prepGraph: parvec and ntype now from prepGraph
+ - added the inclusion check to graph: Compute only included-points' neighbourhoods
+ 
+2.15:
+ - added Podani&Czaran Mean Composite Information -index
+ 
+2.14:
+ - wrote more examples, improved overall documentation
+ 
 2.13:
  - fix some more sun compiler errors: added fmin-function to others.cpp, for some reason is not defined in non-GNU math.h
 2.12:

@@ -1,10 +1,12 @@
 #include "shannon.h"
 
 
+
 std::vector<double> shannon0(Graph *graph, double *fpar, int *dbg, int *included)
+// this is obsolete: we compute only piitau:s in C and do the scaling in R
 {
 	if(*dbg)printf("shannon[");
-	int i,S=*graph->pp->S;
+	int i,S=graph->pp->getNtypes();
 	double Eglobal=0.0, Elocal=0.0, ratio, lambda0=0, X;
 	std::vector<double> value;
 
@@ -49,7 +51,7 @@ std::vector<double> shannon(Graph *graph, double *fpar, int *dbg, int *included)
 std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 {
 	if(*dbg)printf("piitau[");
-	int i,j,k,m,S=*graph->pp->S;
+	int i,j,k,l,m, S=graph->pp->getNtypes();
 	double piitauj, *piitau = new double[S];
 	std::vector<double> value;
 	value.clear();
@@ -61,7 +63,7 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 			m = 0;
 			piitau[i]=0.0;
 
-			for(j=0;j< *graph->pp->n;j++) // first the piitau for each node...
+			for(j=0;j< graph->pp->size();j++) // first the piitau for each node...
 			 if(included[j]) // exclude the minus-sampling sources
 			 {
 				m=m+1;
@@ -70,7 +72,8 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 				{
 					for(k=0;k<(int)graph->nodelist[j].size(); k++)
 					{
-						if(graph->pp->type[graph->nodelist[j][k]-1]==graph->pp->typevec.at(i))
+						l = graph->nodelist[j][k]-1;
+						if(graph->pp->getT(&l)==graph->pp->getTypevec(&i))
 							piitauj = piitauj + 1;
 					}
 					piitauj = piitauj / (double)graph->nodelist[j].size();
@@ -81,16 +84,17 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 			value.push_back(piitau[i]);
 		}
 	}
-
 	if(*dbg)printf("]");
 	return value;
 }
+
+
 // Second version of local entropy: Use the real number of local species as the log-base,
 // then calculate the mean of entropy per type. Returns per type values
 std::vector<double> shannon_v2(Graph *graph, double *fpar, int *dbg, int *included)
 {
 	if(*dbg)printf("local entropies[");
-	int i,j,k, S=*graph->pp->S, *Htau = new int[S];
+	int i,j,k, S=graph->pp->getNtypes(), *Htau = new int[S];
 	double v, pii;
 	std::vector<int> counts;
 	std::vector<double> locpitau;
@@ -100,22 +104,22 @@ std::vector<double> shannon_v2(Graph *graph, double *fpar, int *dbg, int *includ
 	for(k=0;k<S;k++){counts.push_back(0);value.push_back(0.0);} // zero the counts and values
 
 //	main loop over points
-	for(i=0;i<*graph->pp->n;i++)//compute the local entropy for each included node
+	for(i=0;i<graph->pp->size();i++)//compute the local entropy for each included node
 	{
 		if(included[i]) // focus point included in calculation
 		{
 			for(k=0; k< S; k++) Htau[k]=0; // set local type counts 0
 			locpitau.clear();
 
-			counts[graph->pp->type[i]-1]++; // add one to global count vector
+			counts[graph->pp->getT(&i)-1]++; // add one to global count vector
 
-			Htau[graph->pp->type[i]-1]++;   //TODO: Should the point be aware of itself's type?
+			Htau[graph->pp->getT(&i)-1]++;   //TODO: Should the point be aware of itself's type?
 
 			// add the counts of neighbour types to local count vector
 			for(j=0; j< (int)graph->nodelist[i].size(); j++)
 			{
 				k = graph->nodelist[i][j]-1; // type index of neighbour j
-				Htau[ graph->pp->type[ k ] ] = 1 + Htau[ graph->pp->type[ k ] ]; // add one to local count vector
+				Htau[ graph->pp->getT(&k) ] = 1 + Htau[ graph->pp->getT(&k) ]; // add one to local count vector
 			}
 
 			// count which types are present
@@ -133,7 +137,7 @@ std::vector<double> shannon_v2(Graph *graph, double *fpar, int *dbg, int *includ
 					v = v + pii * (log((double)pii)/log((double)locpitau.size())); // sum over type pi*log(pi)
 				}
 
-			value.at(graph->pp->type[i]-1) = value.at(graph->pp->type[i]-1) + v; // contributes to its own type's mean entropy
+			value.at(graph->pp->getT(&i)-1) = value.at(graph->pp->getT(&i)-1) + v; // contributes to its own type's mean entropy
 		}
 	}
 

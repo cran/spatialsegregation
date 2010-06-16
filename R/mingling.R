@@ -25,7 +25,8 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 	# else convert to an integer
 	else
 	{
-		targeti<- which( levels(X$marks)  == target)
+#		targeti<- which( levels(X$marks)  == target)
+		targeti<-which( union(X$marks, NULL) == target)
 		if(length(targeti)!=1) stop("Target type not one of pattern types.")
 	}
 	
@@ -38,12 +39,16 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 	
 	# theoretical values in CSR
 	sum0<-summary(X)
-	if(!ratio) theo<-rep(mean(1-sum0$marks[,3]/sum0$int), length(res$parvec))
-	else theo<-rep(1, length(res$parvec))
+	l<-sum0$int
+	if(!ratio)
+		if(targeti==0) theo<-mean(1-sum0$marks[,3]/sum0$int)
+		else theo<-1-sum0$marks[targeti,3]/sum0$int
+	else theo<-1
 	
-	f<-freqs(X[res$included])
-	w<-f/sum(f)
-	
+#	omarks<-order(union(X$marks,NULL)) # right order of marks
+#	f<-freqs(X)[omarks]
+#	w<-f/sum(f)
+#	
 	# create the fv-object
 	mingling.final<-fv(data.frame(theo=theo,par=res$parvec), 
 			argu="par",
@@ -55,7 +60,7 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 			unitname=res$unitname,
 			fname=funtype
 	)
-	
+#	return(res)
 	# add all typewise values if no target type given
 	if(targeti==0)
 	{
@@ -63,7 +68,8 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 		tw<-res$v
 		
 		# set the names right, and don't forget to check inclusion (might drop some types off)
-		colnames(tw)<-union(marks(X[res$included]),NULL)
+		colnames(tw)<-union(X$marks[res$included],NULL)
+		
 		mingling.final<-bind.fv(x=mingling.final,
 				y=tw,
 				desc=paste("Typewise",funtype,"for type",colnames(tw)),
@@ -86,8 +92,8 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 		mingling.final<-bind.fv(x=mingling.final,
 				y=data.frame("Mingling"=res$v[,1]),
 				desc=paste(funtype,"for type",target),
-				labl="Mingling index",
-				preferred="Mingling index"
+				labl="Mingling",
+				preferred="Mingling"
 		)
 	}
 	
