@@ -5,12 +5,14 @@
 
 extern "C" {
 
-//	res<-.External("fun_c", as.integer(dbg), pp, as.numeric(fpar),
-//						as.integer(typei), as.numeric(graph_parvec),
-//						as.integer(funtype), as.integer(toroidal),
-//						as.numeric(prepR), as.integer(doDists),
-//						as.integer(included), prepGraph,
-//						PACKAGE="spatialsegregation")
+//	res<-.External("fun_c", as.integer(dbg), X, as.numeric(funpars),
+//					as.integer(ntypei), as.numeric(parvec),
+//					as.integer(funi), as.integer(toroidal),
+//					as.numeric(prepRange), as.integer(doDists),
+//					as.integer(included), prepGraph,
+//					as.integer(prepGraphIsTarget),
+//					as.numeric(weightMatrix),
+//					PACKAGE="spatialsegregation")
 
 SEXP fun_c(SEXP Args)
 {
@@ -18,9 +20,9 @@ SEXP fun_c(SEXP Args)
 	Pp pp;
 	Graph graph;
 	Fun fun;
-	double *prepR, *fpar, *par, *parvec, *d0;
-	int *gtype, *doDists, *toroidal, *ftype, *dbg, parn, *incl, prepG=0, *prepGraphIsTarget;
-	SEXP prepGraph;
+	double *prepR, *fpar, *par, *parvec, *d0, *weightMatrix;
+	int *gtype, *doDists, *toroidal, *ftype, *dbg, parn, *incl, prepG=0, *prepGraphIsTarget, *translate;
+	SEXP prepGraph, origpp;
 
 	d0 = new double;
 	d0[0] =-1.0;
@@ -30,6 +32,7 @@ SEXP fun_c(SEXP Args)
 	if(*dbg)printf("Parsing parameter:");
 
 	Args = CDR(Args);
+	origpp = CAR(Args);
 	pp.Init(CAR(Args)); // init pp
 
 	if(*dbg)printf(".");
@@ -59,11 +62,15 @@ SEXP fun_c(SEXP Args)
 
 	if(*dbg)printf(".");
 	Args = CDR(Args);
-	doDists = INTEGER(CAR(Args)); // if the distances are precalculated and stored
+	doDists = INTEGER(CAR(Args)); // if the point-to-point distances should be precalculated and stored
 
 	if(*dbg)printf(".");
 	Args = CDR(Args);
-	incl = INTEGER(CAR(Args)); // the inclusion vector
+	translate = INTEGER(CAR(Args)); // if translation weights should be used in mingling&simpson
+	if(*dbg)printf(".");
+
+	Args = CDR(Args);
+	incl = INTEGER(CAR(Args)); // the point inclusion vector
 
 	if(*dbg)printf(".");
 	Args = CDR(Args);
@@ -74,6 +81,10 @@ SEXP fun_c(SEXP Args)
 	Args = CDR(Args);
 	prepGraphIsTarget = INTEGER(CAR(Args)); // use only the precalculated graph to get a value
 
+	if(*dbg)printf(".");
+	Args = CDR(Args);
+	weightMatrix = REAL(CAR(Args)); // weightMatrix
+
 
 	if(*dbg)printf("done.\n");
 	par = &parvec[parn-1];
@@ -81,21 +92,15 @@ SEXP fun_c(SEXP Args)
 
 
 	if(*dbg)printf("Init graph...");
-	graph.Init(&pp, gtype, par, prepR , doDists, d0, toroidal, incl, dbg);
+	graph.Init(&pp, gtype, par, prepR , doDists, d0, toroidal, incl, weightMatrix, dbg);
 	if(prepG)// if precalculated graph, set the edges, overrule the prepR-parameter
 	{
-		if(*dbg)printf("loading precalculated edges...");
-//		std::vector<std::vector<int> > prepNodelist;
-//TODO: 3xnodelist in memory!! remove atleast 1
-//		VectsxpToVector(getListElement(prepGraph,"edges"), prepNodelist);
-//		graph.setNodelist(&prepNodelist);
 		graph.setNodelist(prepGraph);
-		graph.prepR = REAL(getListElement(prepGraph,"parameters"));
-		*graph.oldpar = *graph.prepR;
+		*graph.oldpar = *par+1;
 	}
 
 	if(*dbg)printf("Init fun...");
-	fun.Init(&graph, parvec, &parn, gtype, ftype, fpar, incl, dbg);
+	fun.Init(&graph, parvec, &parn, gtype, ftype, fpar,translate, incl, dbg);
 	if(*dbg)printf("done.\n");
 
 
@@ -104,7 +109,7 @@ SEXP fun_c(SEXP Args)
 	else{  fun.calculate();  }
 
 	if(*dbg)printf("done.\n");
-	return fun.toSEXP();
+	return fun.toSEXP(origpp);
 }
 
 

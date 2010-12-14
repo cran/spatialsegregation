@@ -15,10 +15,10 @@
 # Author: Tuomas A. Rajala <tuomas.a.rajala@jyu.fi>
 #
 #
-# Last update: 060809
+# Last update: 201010
 ###############################################################################
 
-isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
+isarF<-function(X, r=NULL, target=NULL, v2=FALSE, v3=FALSE, v4=FALSE, ... )
 {
 	# check that X is ppp-object
 	verifyclass(X, "ppp")
@@ -32,15 +32,20 @@ isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
 	# else convert to an integer
 	else
 	{
-#		targeti<- which( levels(X$marks)  == target)
-		targeti<-which( union(X$marks, NULL) == target)
+		if(!is.factor(X$marks))warning("Marks of X are not in factor form. Transforming.")
+		X$marks<-as.factor(X$marks)
+		targeti<- which( levels(X$marks)  == target)
+#		targeti<-which( union(X$marks, NULL) == target)
 		if(length(targeti)!=1) stop("Target type not one of pattern types.")
 	}
 	
 	#v2 logical if a degree weighted version should be calculated
 	if(v2) funtype <- "Neighbour-count-weighted-ISAR"
+	if(v3){v2<-2; funtype <- "Mass-weighted ISAR"; }
+	if(v4){v2<-3; funtype <- "eISAR"; }
 	else funtype <- "ISAR"
 	
+		
 	# use the main calc function
 	res<-segregationFun(X=X, fun="isar", r, funpars=c(targeti, as.integer(v2)), ...)
 	
@@ -55,9 +60,8 @@ isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
 	#    calc the theoretical values, also for the degree weighted version
 	theo<-NULL
 	for(para in res$parvec)theo<-
-				c(theo,
-				  sum(1-exp(-mdeg(sum(l),para)*l/sum(l))) / ifelse(v2,mdeg(sum(l),para),1))
-#				sum(1-(1-l/sum(l))^mdeg(sum(l),para) )/ifelse(v2,mdeg(sum(l),para),1))
+				c(theo, 
+                 sum(1-exp(-mdeg(sum(l),para)*l/sum(l) )) / ifelse(v2,mdeg(sum(l), para),1))
 										
 		
 	# create the fv-object
@@ -112,7 +116,8 @@ isarF<-function(X, r=NULL, target=NULL, v2=FALSE, ... )
 	# and some notes
 	attr(isar.final,"neighbourhoodType")<-res$ntype
 	attr(isar.final,"note")<-res$note
-	
+	# add pointwise values
+	attr(isar.final,"point.values")<-res$point.values
 	# return 
 	isar.final
 }

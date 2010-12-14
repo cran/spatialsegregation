@@ -1,25 +1,3 @@
-#280410
- - Podani&Czaran-indeksi
+#121010:
+	- translation reunakorjaus
  
- - Mingling:
- +   - palauttaa listan jossa typewise arvot
- - ISAR:
- +   - palauttaa listan jossa typewise arvot
-    
- - shannon:
- +   - palauttaa listan jossa piitau't
-    
- - simpson:
- +   - palauttaa listan jossa typewise k_tau/k?
-    
- ==>
- 
-+  - fun palauttaa typesn x parlen matriisin.
- 
- -etuja
-   - voidaan tehdä tarkkuusarviot
-   - voidaan tehdä herkkyysarviot
- 
- -haittoja
-   - ei yksittäisen lajin sisäistä tarkkuutta
-   - R funktiot kirjoitettava fiksummiksi

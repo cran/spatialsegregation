@@ -12,7 +12,8 @@ Graph::~Graph()
 {
 }
 /********************************************************************************************/
-void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDists0, double *preDists, int *toroidal0, int *inc0, int *dbg0)
+void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDists0,
+		double *preDists, int *toroidal0, int *inc0, double *wMatrix, int *dbg0)
 {
 	int typein,i,j;
 	if(*dbg0)printf("intializing graph-object... ");
@@ -20,6 +21,7 @@ void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDist
 	pp = pp0;
 	par=par0;
 	prepR=prepR0;
+	preEdges = 0;
 	opar = *par;
 	oldpar = &opar;
 	doDists=doDists0;
@@ -30,6 +32,14 @@ void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDist
 	mdeg = 0.0;
 	pp->setToroidal(toroidal0);
 	typeIncluded.clear();
+	weightMatrix = wMatrix;
+
+	if(weightMatrix[0]<0)getTypeToTypeWeightp = &Graph::getTypeToTypeWeight_all1; // if no weights given
+	else{
+		if(*dbg)printf("Type-to-Type weight matrix received.\n");
+		getTypeToTypeWeightp = &Graph::getTypeToTypeWeight_weighted; // weights given
+	}
+
 	for(i=0; i< pp->getNtypes(); i++)//need to ignore some types based on the inclusion vector
 	{
 		typein=0;
@@ -65,12 +75,16 @@ void Graph::setNodelist(std::vector<std::vector<int> > *nodelist_new)
 	nodelist.clear();nodelist.resize(0);
 	for(i=0;i<(int)nodelist_new->size();i++)
 		nodelist.push_back(nodelist_new->at(i));
+	preEdges = 1;
 }
 /********************************************************************************************/
 void Graph::setNodelist(SEXP prepGraph)
 {
+	if(*dbg)printf("setting precalculated edges...");
 	nodelist.clear();nodelist.resize(0);
 	VectsxpToVector(getListElement(prepGraph,"edges"), nodelist);
+	preEdges = 1;
+	if(*dbg)printf("ok.");
 }
 /********************************************************************************************/
 SEXP Graph::toSEXP()
@@ -94,6 +108,7 @@ SEXP Graph::toSEXP()
 		this->nodelist[i].clear();
 		SET_VECTOR_ELT(graph, i, *node);
 		UNPROTECT(1);
+		delete node;
 	}
 	UNPROTECT(1);
 	return graph;
@@ -143,6 +158,20 @@ void Graph::addNew(int i, int j)
 		nodelist.at(i).push_back(j);
 }
 /********************************************************************************************/
+/********************************************************************************************/
+// Weight matrix functions
+double Graph::getTypeToTypeWeight(int *t1, int *t2){
+	return (this->*getTypeToTypeWeightp)(t1,t2);
+}
+// if truly weighted
+double Graph::getTypeToTypeWeight_weighted(int *t1, int *t2){
+	return weightMatrix[(*t2-1)*pp->getNtypes()+(*t1-1)];
+}
+// otherwise
+double Graph::getTypeToTypeWeight_all1(int *t1, int *t2){
+	return 1;
+}
+/********************************************************************************************/
 //The graph methods
 /********************************************************************************************/
 void Graph::sg_calc()
@@ -152,19 +181,20 @@ void Graph::sg_calc()
 	{
 		if(*dbg)printf("Preprocessing[");
 		this->sg_geometric(prepR);
+		preEdges = 1;
 		if(*dbg)printf("] ok.\n ");
 	}
 	//start the calculation
 	if(*gtype==0) //geometric
 	{
-		if(*oldpar > *par)
+		if(preEdges)
 			this->sg_shrink_geometric(par);
 		else
 			this->sg_geometric();
 	}
 	else if(*gtype==1) //knn
 	{
-		if(*oldpar > *par)
+		if(preEdges)
 			this->sg_shrink_knn();
 		else
 			this->sg_knn();
@@ -179,6 +209,8 @@ void Graph::sg_calc()
 	else if(*gtype==9) this->sg_RNG();
 	else if(*gtype==10) this->sg_CCC();
 	else if(*gtype==11) this->sg_STIR();
+	else if(*gtype==12) this->sg_big_geometric();
+	preEdges = 1;
 }
 
 /********************************************************************************************/
@@ -205,6 +237,26 @@ void Graph::sg_geometric(double *R)
 	if(*dbg)printf(" Ok.");
 }
 
+void Graph::sg_big_geometric()
+{
+	if(*dbg)printf("Big geometric (R=%f):",*par);
+	int i,j;
+	double dist;
+	for(i=0;i<pp->size();i++)
+		if(inc[i])
+			for(j=0;j<pp->size();j++)
+				if(i!=j)
+				{
+					dist = pp->getDist(&i, &j);
+					if(dist<*par){
+						nodelist[i].push_back(j+1);
+					}
+				}
+	mdeg = this->pp->lambda*PI*(*par)*(*par);
+	if(*dbg)printf(" Ok.");
+	*gtype = 0;
+}
+
 void Graph::sg_shrink_geometric(double *R)
 {
 	if(*dbg)printf("Geometric (R=%f) (shrinking):",*R);
@@ -225,9 +277,9 @@ void Graph::sg_shrink_geometric(double *R)
 			nodelist[i].clear();nodelist[i].resize(0);
 			for (j = 0; j < (int)node->size(); ++j) this->nodelist[i].push_back(node->at(j));
 			delete node;
-		}
+	}
 	mdeg = this->pp->lambda*PI*(*R)*(*R);
-	if(*dbg)printf(" Ok.");
+	if(*dbg)printf(" ok.");
 }
 /********************************************************************************************/
 void Graph::sg_mass_geometric()
@@ -253,11 +305,11 @@ void Graph::sg_mass_geometric()
 void Graph::sg_knn()
 {
 
-	int i,j,l,*k,kk, mik;
+	int i,j,l,*k,kk, mink;
 	kk = (int) par[0];
 	k = &kk;
 	std::vector<int> *node;
-	if(*prepR==0)// if not preprocessed
+	if(preEdges==0)// if not preprocessed
 	{
 		if(*dbg)printf("%i-nn:",*k);
 		double *dists2_i = new double[pp->size()], *dists2_i2 = new double[pp->size()];
@@ -273,7 +325,6 @@ void Graph::sg_knn()
 						nodelist[i].push_back(l+1);
 						break;
 					}
-
 		}
 	}
 	else{ //preprocessed
@@ -285,12 +336,13 @@ void Graph::sg_knn()
 			node = new std::vector<int>;
 			dists2_i = new double [nodelist[i].size()];
 			dists2_i2 = new double [nodelist[i].size()];
-			mik = *k;
+			mink = *k;
 			if( (int) nodelist[i].size()<*k )
 			{
-				mik = nodelist[i].size();
+				mink = nodelist[i].size();
 				printf("\n preprocessing R too small, not enough neighbours (point #%i)!!\n",i+1);
 			}
+
 			for(l=0;l< (int) nodelist[i].size();l++)
 			{
 				j = nodelist[i][l]-1;
@@ -298,8 +350,7 @@ void Graph::sg_knn()
 				dists2_i[l]=dists2_i2[l];
 			}
 			qsort( dists2_i, nodelist[i].size() , sizeof(double),compare_doubles); // sort distances, rising
-
-			for(j=0;j< mik;j++) // find the k nearest
+			for(j=0; j<mink ;j++) // find the k nearest
 				for(l=0;l< (int) nodelist[i].size();l++)
 					if( dists2_i[j] == dists2_i2[l] ) //with distance comparison
 					{
@@ -335,7 +386,7 @@ void Graph::sg_gabriel()
 	double x0,y0,R2, d;
 	std::vector<int> *node;
 
-	if(*this->prepR == 0) // no preprocessing done,a heavy looping
+	if(preEdges == 0) // no preprocessing done,a heavy looping
 	  for(i=0;i<(pp->size()-1);i++)
 	  {
 		  for(j=i+1;j<pp->size();j++)
@@ -368,36 +419,39 @@ void Graph::sg_gabriel()
 		if(*dbg)printf("(prepd): ");
 		for(i = 0 ; i< pp->size() ;  i++)
 		{
-			node = new std::vector<int>;
-			for( l=0 ; l < (int) this->nodelist[i].size(); l++ )
+			if(inc[i])
 			{
-				j = this->nodelist[i][l]-1;
-				x0 = fabs(this->pp->getX(&i)-this->pp->getX(&j))/2.0+fmin(this->pp->getX(&i),this->pp->getX(&j));
-				y0 = fabs(this->pp->getY(&i)-this->pp->getY(&j))/2.0+fmin(this->pp->getY(&i),this->pp->getY(&j));
-				R2 = (pow(this->pp->getX(&i)-this->pp->getX(&j),2) + pow(this->pp->getY(&i)-this->pp->getY(&j),2) )/4.0;
-				empty = 1+kk;
-				for(m=0; m <(int) this->nodelist[i].size();m++) // the small ball is included in the preprocessing ball
+				node = new std::vector<int>;
+				for( l=0 ; l < (int) this->nodelist[i].size(); l++ )
 				{
-					k =  (int) this->nodelist[i][m]-1;
-					if(k != i)
-						if( k != j)
-						{
-							d = pow(x0-pp->getX(&k),2) + pow(y0-pp->getY(&k),2);
-							if( d<R2 )
+					j = this->nodelist[i][l]-1;
+					x0 = fabs(this->pp->getX(&i)-this->pp->getX(&j))/2.0+fmin(this->pp->getX(&i),this->pp->getX(&j));
+					y0 = fabs(this->pp->getY(&i)-this->pp->getY(&j))/2.0+fmin(this->pp->getY(&i),this->pp->getY(&j));
+					R2 = (pow(this->pp->getX(&i)-this->pp->getX(&j),2) + pow(this->pp->getY(&i)-this->pp->getY(&j),2) )/4.0;
+					empty = 1+kk;
+					for(m=0; m <(int) this->nodelist[i].size();m++) // the small ball is included in the preprocessing ball
+					{
+						k =  (int) this->nodelist[i][m]-1;
+						if(k != i)
+							if( k != j)
 							{
-								empty = empty - 1;
-								if(empty == 0) break;
+								d = pow(x0-pp->getX(&k),2) + pow(y0-pp->getY(&k),2);
+								if( d<R2 )
+								{
+									empty = empty - 1;
+									if(empty == 0) break;
+								}
 							}
-						}
+					}
+					if(empty)
+					{
+						node->push_back(j+1);
+					}
 				}
-				if(empty)
-				{
-					node->push_back(j+1);
-				}
+				nodelist[i].clear();nodelist[i].resize(0);
+				for(h=0;h<(int)node->size();h++) nodelist[i].push_back(node->at(h));
+				delete node;
 			}
-			nodelist[i].clear();nodelist[i].resize(0);
-			for(h=0;h<(int)node->size();h++) nodelist[i].push_back(node->at(h));
-			delete node;
 		}
 	}
 	mdeg = 4;
@@ -413,7 +467,7 @@ void Graph::sg_delaunay()
 	if(*dbg)printf("Delaunay: ");
 	int i,j,k,l,h;
 	std::vector<int> *node;
-	if(*this->prepR==0) // no preprocessing done, heavy looping
+	if(preEdges==0) // no preprocessing done, heavy looping
 	{
 		if(*dbg)printf("(raw):");
 		for(i = 0 ; i< pp->size()-2 ; i++ )
@@ -430,23 +484,26 @@ void Graph::sg_delaunay()
 		if(*dbg)printf("(prepd): ");
 		for(i = 0 ; i< pp->size() ;  i++)
 		{
-			node = new std::vector<int>;
-			for( l=0 ; l < (int)nodelist[i].size()-1; l++ )
+			if(inc[i])
 			{
-				j = nodelist[i][l]-1;
-				for(h=l+1; h < (int)nodelist[i].size();h++ )
+				node = new std::vector<int>;
+				for( l=0 ; l < (int)nodelist[i].size()-1; l++ )
 				{
-					k = nodelist[i][h]-1;
-					if( pp->Empty(&i, &j, &k) )
+					j = nodelist[i][l]-1;
+					for(h=l+1; h < (int)nodelist[i].size();h++ )
 					{
-						node->push_back(j+1);
-						node->push_back(k+1);
+						k = nodelist[i][h]-1;
+						if( pp->EmptyConstrained(&i, &j, &k, &nodelist.at(i)) )
+						{
+							node->push_back(j+1);
+							node->push_back(k+1);
+						}
 					}
 				}
+				nodelist[i].clear();nodelist[i].resize(0);
+				for(h=0;h<(int)node->size();h++) nodelist[i].push_back((*node).at(h));
+				delete node;
 			}
-			nodelist[i].clear();nodelist[i].resize(0);
-			for(h=0;h<(int)node->size();h++) nodelist[i].push_back((*node).at(h));
-			delete node;
 		}
 		this->remove_duplicates();
 	}
@@ -507,7 +564,7 @@ void Graph::sg_markcross()
 		for(j=i+1;j<pp->size();j++)
 		{
 			dist = pp->getDist(&i, &j);
-			if(dist< pp->getMass(&i)+pp->getMass(&j)){
+			if(dist< (pp->getMass(&i)+pp->getMass(&j))){
 				nodelist[i].push_back(j+1);
 				nodelist[j].push_back(i+1);
 			}
@@ -525,7 +582,7 @@ void Graph::sg_SIG()
 		dist = MAX_DOUBLE;
 		for(j=0;j<pp->size();j++)
 			if(i!=j) dist = fmin(dist, pp->getDist(&i, &j));
-		pp->setMass(&i,dist);
+		pp->setMass(&i,&dist);
 	}
 	*dbg=0;
 	sg_markcross();
@@ -597,15 +654,15 @@ void Graph::sg_CCC()
 	int i,j, type0=(int)par[0];
 	for(i=0; i<pp->size();i++)
 	{
-		pp->setMass(&i,mm);
+		pp->setMass(&i,&mm);
 		if(pp->getT(&i)==type0)
 		{
-			pp->setMass(&i, m);
+			pp->setMass(&i, &m);
 			for(j=0;j<pp->size();j++)
 				if( (j!=i) & (pp->getT(&j)!=type0) )
 				{
 					apu = fmin(pp->getMass(&i),pp->getDist(&i, &j));
-					pp->setMass(&i, apu);
+					pp->setMass(&i, &apu);
 				}
 		}
 	}

@@ -1,3 +1,36 @@
+2.29:
+ - memory leak fixed
+ 
+2.28:
+ - isar empty-space version added (flag v4) (equals normal version)
+2.27:
+ - fix delauney => delaunay
+
+2.26:
+ - delaunay now uses localised checks for connections, MUCH faster when using prepared edges.
+2.25:
+ - include-vector noticed also by del and gab
+ 
+2.24:
+ - added big geometric, "bgeo": compute neighbours only for the included nodes
+ 
+2.23:
+ - Mingling and Simpson index with translation corrected components (no real difference as they are ratio estimators)
+ 
+2.22:
+ - added two-species contingency table test of Dixon 1994
+ 
+2.21:
+ - added to isarF a mass-weighted version (flag v3)
+ - added isarF and minglingF the pointwise values so that we can use them in biolisa-package
+
+2.20: 
+ - fixed a bug in weightMatrix passing in isarF: not passed to segregationFun
+ 
+2.19:
+ - use R:s internal factoring integers for point types versus own numbering
+ - add isar-weighting by species-species distance matrix
+ 
 2.18:
  - fix documentation
  

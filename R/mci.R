@@ -19,8 +19,10 @@ mciF<-function(X, r=NULL, target=NULL, ...)
 	# else convert to an integer
 	else
 	{
-#		targeti<- which( levels(X$marks) == target)
-		targeti<-which( union(X$marks, NULL) == target)
+		if(!is.factor(X$marks))warning("Marks of X are not in factor form. Transforming.")
+		X$marks<-as.factor(X$marks)
+		targeti<- which( levels(X$marks)  == target)
+#		targeti<-which( union(X$marks, NULL) == target)
 		if(length(targeti)!=1) stop("Target type not one of pattern types.")
 		funtype<-paste(funtype, "of type", target)
 	}

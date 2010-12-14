@@ -25,8 +25,10 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 	# else convert to an integer
 	else
 	{
-#		targeti<- which( levels(X$marks)  == target)
-		targeti<-which( union(X$marks, NULL) == target)
+		if(!is.factor(X$marks))warning("Marks of X are not in factor form. Transforming.")
+		X$marks<-as.factor(X$marks)
+		targeti<- which( levels(X$marks)  == target)
+#		targeti<-which( union(X$marks, NULL) == target)
 		if(length(targeti)!=1) stop("Target type not one of pattern types.")
 	}
 	
@@ -103,6 +105,9 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 	# and some notes
 	attr(mingling.final,"neighbourhoodType")<-res$ntype
 	attr(mingling.final,"note")<-res$note
+	
+	# point values
+    attr(mingling.final,"point.values")<-res$point.values
 	
 	# return 
 	mingling.final

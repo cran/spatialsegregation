@@ -32,24 +32,24 @@ double  Point::getX() {return this->x;}
 double  Point::getY() {return this->y;}
 double  Point::getZ() {return this->z;}
 int     Point::getT() {return this->type;}
-void    Point::setT(int t) {this->type = t;}
-void    Point::setMass(double x){this->mass = x;}
+void    Point::setT(int *t) {this->type = *t;}
+void    Point::setMass(double *x){this->mass = *x;}
 double  Point::getMass(){return this->mass;}
 /********************************************************************************************/
 int 	Point::nsize() {return this->neighbours.size();}
 int     Point::getCluster(){return this->cluster;}
 void    Point::clearNeighbourhood(){this->neighbours.clear();}
 int 	Point::getId(){return this->id;}
-void 	Point::setId(int i){this->id = i;}
-void    Point::setCluster(int i){this->cluster = i;}
-void    Point::setMass2(double x){this->mass2 = x;}
+void 	Point::setId(int *i){this->id = *i;}
+void    Point::setCluster(int *i){this->cluster = *i;}
+void    Point::setMass2(double *x){this->mass2 = *x;}
 double  Point::getMass2(){return this->mass2;}
 /********************************************************************************************/
-void    Point::move(double x, double y){this->x =x;this->y =y;}
-void    Point::move(double x, double y, double z)
+void    Point::move(double *x, double *y){this->x =*x;this->y =*y;}
+void    Point::move(double *x, double *y, double *z)
 {
-	this->x =x;this->y =y;
-	this->z =z;
+	this->x =*x;this->y =*y;
+	this->z =*z;
 }
 /********************************************************************************************/
 int 	Point::getNeighbour(int *i)

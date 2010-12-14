@@ -20,14 +20,16 @@ The function \code{isar.index} is a shortcut to get a single value for the patte
 }
 
 \usage{
-isarF(X, r=NULL, target=NULL, v2=FALSE, ... )
+isarF(X, r=NULL, target=NULL, v2=FALSE, v3=FALSE, v4=FALSE, ... )
 isar.index(X, r=4, ntype="knn", ...)
 }
 \arguments{
 \item{X}{Multitype point pattern of class \code{ppp} (see package 'spatstat')}
 \item{r}{Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with different ranges.}
 \item{target}{Default NULL. Calculate only for target type. If NULL compute mean over all types.}
-\item{v2}{Logical. Estimate species/neighbours -ratios instead of just species/1.}
+\item{v2}{Logical. Estimate species-to-neighbours-ratio instead of just total number of species.}
+\item{v3}{Logical. Instead of summing number 1 for each species present, sum the average X$mass of each species present.}
+\item{v4}{Logical. Estimate ISAR using empty space probabilities instead of direct counts (equals the normal version in all my tests)}
 \item{ntype}{Sets the n'hood type to \code{knn} by default in isar.index.}
 \item{...}{Further parameters for the function \code{segregationFun}.}
 }

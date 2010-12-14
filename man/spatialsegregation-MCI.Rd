@@ -31,8 +31,6 @@ tuomas.rajala@jyu.fi
 }
 \references{
 Podani, Czaran: Individual-centered analysis of mapped point patterns representing multi-species assemblages. J. Veg. Sci. 8: 259-270, 1997.
-
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
 }
 
 \keyword{ package }

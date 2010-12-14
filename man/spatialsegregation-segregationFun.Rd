@@ -15,7 +15,8 @@ shortcuts \code{minglingF}, \code{isarF}, \code{shannonF} and \code{simpsonF} hi
 \usage{
 segregationFun(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL, 
 		       toroidal=FALSE, minusRange=0,  included=NULL, dbg=FALSE, 
-			   doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE)
+			   doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE,
+			   weightMatrix=NULL, translate=FALSE)
 }
 
 \arguments{
@@ -33,8 +34,9 @@ segregationFun(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 \item{prepGraph}{Precalculated graph for the point pattern. If given, The \code{prepRange}, \code{dodists} and \code{toroidal} are ignored and calculations are carried 
       using the prepGraph as a starting point. Useful for huge datasets.}
 \item{prepGraphIsTarget}{If TRUE, precalculated graph \code{prepGraph} is used to calculate a single function value directly, all other neighbourhood parameters are ignored.}
+\item{weightMatrix}{See \code{isarF} for this.}
+\item{translate}{Use translation correction (see e.g. documentation of \code{spatstat::Kest} for details). Used only in mingling index.}
 }
-
 \details{
 This is the general function for computing the spatial exposure (segregation/mingling) features. Used by minglingF, shannonF, simpsonF and isarF,
 which should be preferred for better (and nicer) outcome.

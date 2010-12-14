@@ -26,24 +26,24 @@ public:
 	double  getY();
 	double  getZ();
 	int     getT();
-	void	setT(int );
+	void	setT(int *);
 	double  getMass();
-	void    setMass(double );
+	void    setMass(double *);
 
 	int 	getId();
-	void 	setId(int );
+	void 	setId(int *);
 	int		nsize();
 	int 	getCluster();
 	double  getMass2();
-	void    setMass2(double );
+	void    setMass2(double *);
 	int     getNeighbour(int *);
 	void    addNeighbour(int *i);
 	void    removeNeighbour(int *i);
 	void    clearNeighbourhood();
-	void    setCluster(int i);
+	void    setCluster(int *i);
 
-	void    move(double, double);
-	void	move(double, double, double);
+	void    move(double*, double*);
+	void	move(double*, double*, double*);
 };
 
 #endif /*POINT_H_*/

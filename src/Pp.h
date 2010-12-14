@@ -14,12 +14,16 @@ class Pp
 	int ntypes;
 	int tor;
 	int *toroidal;
-
+	double windowArea;
 
 	double (Pp::*dist)(int*, int*);
+	double (Pp::*weight)(int*, int*);
 	double distEuclidian(int*, int*);
 	double distPrecalculated(int*, int*);
+	double weightAll1(int *, int *);
+	double weightTrans(int *, int *);
 	std::vector<double> distTriangle;
+	std::vector<double> weightTriangle;
 	std::vector<double> * pdists;
 	std::vector<int> typevec;
 
@@ -48,17 +52,24 @@ public:
 
 
 	double getDist(int *, int *);
+	void   setDist(int *, int *, double d);
 	void   calcDists();
 	void   setDists(double *);
 
+	double getWeight(int *, int *);
+	void   setWeight(int *, int *, double d);
+	void   calcTransWeights();
+	void   setAllTransWeights(double );
+
 	int    getCluster(int *);
 	int    nsize(int*); // neighbours
-	void   setMass(int *, double );
+	void   setMass(int *, double *);
 	double getMass(int *);
-	void   setMass2(int *, double );
+	void   setMass2(int *, double *);
 	double getMass2(int *);
 
 	int Empty(int *, int *, int *); //voronoi
+	int EmptyConstrained(int *, int *, int *, std::vector <int>  *);
 
 	void addNeighbour(int *i, int *j);
 	void removeNeighbour(int *i, int *j);
