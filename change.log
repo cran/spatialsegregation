@@ -1,3 +1,5 @@
+2.31:
+ - NAMESPACE added
 2.30:
  - fix oveloading ambiguity in pow-calls, mixed float and double 
  

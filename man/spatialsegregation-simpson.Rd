@@ -20,9 +20,8 @@ The function \code{simpson.index} is a shortcut to get a single value for the pa
 }
 
 \usage{
-simpsonF<-function(X, r=NULL, ...)
+simpsonF(X, r=NULL, ...)
 simpson.index(X, spatial=FALSE, ...)
-
 }
 
 \arguments{
