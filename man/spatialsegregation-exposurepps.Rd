@@ -7,7 +7,7 @@
    data(exposurepps)
 }
 \format{
-A list with three (3) elements of class \code{ppp}.
+A list with nine elements of class \code{ppp}.
 }
 \details{
 A list of 9 point patterns with different degrees of intra-species clustering and 

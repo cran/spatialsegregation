@@ -43,7 +43,7 @@ University of Jyvaskyla, Finland
 tuomas.a.rajala@jyu.fi
 }
 \references{
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
 
 Reardon, O'sullivan: Measures of spatial segregation. Sociological methodology, 34:121-162, 2004.
 }

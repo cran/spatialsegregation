@@ -11,7 +11,7 @@ mciF<-function(X, r=NULL, target=NULL, ...)
 {
 	# check that X is ppp-object
 	verifyclass(X, "ppp")
-	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern.")
+	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern (data.frame-marks not yet supported). ")
 	# if no target given, calculate for all types
 	funtype<-"Mean compositional information"
 	if(is.null(target))

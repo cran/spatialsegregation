@@ -1,3 +1,8 @@
+2.33:
+ - improve documentation
+ - add parameter checks
+2.32:
+ - adaptive minus-border correction
 2.31:
  - NAMESPACE added
 2.30:

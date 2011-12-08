@@ -41,7 +41,7 @@ University of Jyvaskyla, Finland
 tuomas.a.rajala@jyu.fi
 }
 \references{
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
 
 Shimatani, Kubota: Quantitative assesment of multispecies spatial pattern with high species diversity. Ecological Research, 19, 2004.
 }

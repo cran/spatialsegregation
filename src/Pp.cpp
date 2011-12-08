@@ -70,6 +70,8 @@ void Pp::Init(SEXP Argspp)
 
 // distance
 	dist = &Pp::distEuclidian;
+//	edge distances for border correction: For rectangular window only.
+	edgeDistp = &Pp::edgeDist;
 //	weights
 	weight = &Pp::weightAll1;
 }
@@ -111,6 +113,11 @@ void Pp::calcDists()
 double Pp::getDist(int *i, int *j)
 {
 	return (this->*dist)(i,j);
+}
+/********************************************************************************************/
+double Pp::getEdgeDist(int *i)
+{
+	return (this->*edgeDistp)(i);
 }
 /********************************************************************************************/
 void Pp::setDist(int *i, int *j, double d)
@@ -163,6 +170,20 @@ void Pp::calcTransWeights()
 			setWeight(&i, &j, d);
 		}
 	weight = &Pp::weightTrans;
+}
+/********************************************************************************************/
+void Pp::calcEdgeDists() {
+	distEdge.clear();
+	for(int i=0; i<this->m;i++)
+		distEdge.push_back(edgeDist(&i));
+	edgeDistp = &Pp::edgeDistPrecalculated;
+}
+/********************************************************************************************/
+double Pp::edgeDist(int *i) {
+	return (double)fminf(fminf(xlim[1]-getX(i), getX(i)-xlim[0]), fminf(ylim[1]-getY(i),getY(i)-ylim[0]));
+}
+double Pp::edgeDistPrecalculated(int *i) {
+	return distEdge.at(*i);
 }
 /********************************************************************************************/
 void Pp::setWeight(int *i, int *j, double d)

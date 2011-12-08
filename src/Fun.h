@@ -37,11 +37,12 @@ class Fun
 	int *gtype; // 0 = geometric, 1 = knn
 	int *ftype;
 	int *included;
+	int autoborder; // should we adapt the minus-border correction
 	int *trans; // translation weights should be computed
 	double *fpar;
 
 	int *dbg;
-
+	void updateInclude();
 public:
 	Fun();
 	virtual ~Fun();

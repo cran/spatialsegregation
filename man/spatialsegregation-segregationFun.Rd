@@ -14,7 +14,7 @@ shortcuts \code{minglingF}, \code{isarF}, \code{shannonF} and \code{simpsonF} hi
 
 \usage{
 segregationFun(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL, 
-		       toroidal=FALSE, minusRange=0,  included=NULL, dbg=FALSE, 
+		       toroidal=FALSE, minusRange=TRUE,  included=NULL, dbg=FALSE, 
 			   doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE,
 			   weightMatrix=NULL, translate=FALSE)
 }
@@ -26,8 +26,8 @@ segregationFun(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 \item{ntype}{Default "geometric". Type of the neighbourhood graph. Accepts: "knn", "geometric", "delauney", "gabriel".}
 \item{funpars}{Default NULL. Parameter(s) for the measure. Mingling: c(i,j), where i= only for type i (0 for all), j=1 -> ratio version. ISAR: i, i=type (integer). Shannon: 0 or 1, see \code{v2} in \code{shannonF}. Simpson: none.}
 \item{toroidal}{Default FALSE. If TRUE, use a toroidal correction in distance calculation. Works at the moment only for rectangular windows and "geometric" or "knn" graph.}
-\item{minusRange}{If given, \code{included}-vector is created with points with distance atleast minusRange from the border.}
-\item{included}{boolean-vector of length |pp|. included[i]==TRUE => pp[i] included in calculations.}
+\item{minusRange}{If TRUE, adaptive minus-sampling is employed. Overrides \code{included}-vector. If given as a positive number, \code{included}-vector is created with points with distance atleast minusRange from the border.}
+\item{included}{boolean-vector of length |pp|. included[i]==TRUE => pp[i] included in calculations. Used for minus-sampling border correction.}
 \item{dbg}{Default FALSE. Print additional runtime texts.}
 \item{doDists}{Default TRUE. Precalculate distances for speed. Be aware of memory requirements, n*(n-1)!}
 \item{prepRange}{Default 0. If >0, shrink the search space for neighbourhoods by searching only points within distance R i.e. precalculates a geometric graph.}
@@ -60,6 +60,9 @@ only those points with TRUE (1) value are used in calculation. However, the neig
 
 }
 
+\value{
+	Returns an object of class \code{fv}, see spatstat for more details. Basically a list with the computed values and parameter values.
+}
 
 \author{
 Tuomas Rajala

@@ -20,12 +20,16 @@ class Pp
 	double (Pp::*weight)(int*, int*);
 	double distEuclidian(int*, int*);
 	double distPrecalculated(int*, int*);
+	double edgeDist(int *);
+	double edgeDistPrecalculated(int *);
+	double (Pp::*edgeDistp)(int *);
 	double weightAll1(int *, int *);
 	double weightTrans(int *, int *);
 	std::vector<double> distTriangle;
 	std::vector<double> weightTriangle;
 	std::vector<double> * pdists;
 	std::vector<int> typevec;
+	std::vector<double> distEdge;
 
 public:
 	std::vector<double > lambdas;
@@ -52,9 +56,11 @@ public:
 
 
 	double getDist(int *, int *);
-	void   setDist(int *, int *, double d);
 	void   calcDists();
+	void   setDist(int *, int *, double d);
 	void   setDists(double *);
+	double getEdgeDist(int *);
+	void   calcEdgeDists();
 
 	double getWeight(int *, int *);
 	void   setWeight(int *, int *, double d);

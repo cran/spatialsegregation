@@ -9,7 +9,7 @@ shannonF<-function(X, r=NULL, v2=FALSE, ...)
 {
 	# check that X is multitype ppp-object
 	verifyclass(X, "ppp")
-	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern.")
+	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern (data.frame-marks not yet supported).")
 	
 	# the main calc function: it calculates only the pi_tau-vector
 	res<-segregationFun(X=X, r=r, fun="shannon", funpars=ifelse(v2,1,0), ...) 

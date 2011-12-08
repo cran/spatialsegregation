@@ -12,4 +12,8 @@ export(biomassF,
 	   simpsonF,
 	   simpson.index,
 	   dixon,
+	   segregationFun,
 	   print.segtest)
+
+useDynLib(spatialsegregation)
+	   

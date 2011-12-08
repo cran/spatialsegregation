@@ -15,7 +15,7 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 {
 	# check that X is ppp-object
 	verifyclass(X, "ppp")
-	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern.")
+	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern (data.frame-marks not yet supported).")
 	# if no target given, calculate for all types
 	if(is.null(target))
 	{

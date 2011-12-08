@@ -54,7 +54,7 @@ Graz: The behaviour of the species mingling index \code{$m_{sp}$} in relation to
 
 Lewandowski, Pommerening: Zur Beschreibung der Waldstruktur - Erwartete und beobachtete Arten-Durchmischung. Forstwiss Centralbl, 116:129-139, 1997.
 
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
 
 Reardon, O'sullivan: Measures of spatial segregation. Sociological methodology, 34:121-162, 2004.
 

@@ -45,7 +45,7 @@ std::vector<double> biomass(Graph *graph, double *fpar, int *dbg, int *included)
 						vi = vi + graph->pp->getMass(&k);
 					}
 
-					if(fpar[1]>0) // if mean versio
+					if(fpar[1]>0) // if mean version
 					{
 						vtemp = vi/(double)m;
 						graph->pp->setMass2(&i, &vtemp);

@@ -1,3 +1,5 @@
 #121010:
 	- translation reunakorjaus
  
+# 091011:
+	- CRAN versio adaptiivisesta borderista

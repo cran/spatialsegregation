@@ -23,6 +23,11 @@ void Fun::Init(Graph *g0, double *par0, int *parn, int *gt, int *ft, double *fpa
 		delete pvec;
 	}
 	included = included0;
+	autoborder = 0;
+	if(included[0]<0) {
+		g0->pp->calcEdgeDists(); // precompute the edge distances for adaptive minus-sampling.
+		autoborder = 1;
+	}
 	gtype = gt;
 	ftype = ft;
 	fpar = fpar0;
@@ -76,8 +81,11 @@ void Fun::calculate()
 		graph->par = &parvec[i];
 		graph->sg_calc();
 		*graph->oldpar = *graph->par;
-
-		if(*this->dbg)printf("] Value[ ");
+		if(autoborder){
+			if(*this->dbg)printf("][minus]");
+			updateInclude();
+		}
+		if(*this->dbg)printf("Value[ ");
 		// calc index
 		if(*ftype == 1)
 			resvec = mingling(graph, fpar, dbg, included);
@@ -99,6 +107,7 @@ void Fun::calculate()
 void Fun::re_calculate()
 {
 		std::vector<double> resvec;
+		if(autoborder) updateInclude();
 		if(*this->dbg)printf(" Value[ ");
 		// calc index
 		if(*ftype == 1)
@@ -115,3 +124,9 @@ void Fun::re_calculate()
 		if(*this->dbg)printf(" ]\n");
 }
 
+void Fun::updateInclude() {
+	for(int i=0; i<graph->pp->size();i++) {
+		included[i]=1;
+		if(graph->pp->getEdgeDist(&i) < *graph->par) included[i]=0;
+	}
+}

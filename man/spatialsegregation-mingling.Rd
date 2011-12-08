@@ -28,7 +28,7 @@ mingling.index(X, r=4, ntype="knn", ...)
 \arguments{
 \item{X}{Multitype point pattern of class \code{ppp} (see package 'spatstat')}
 \item{r}{Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with different ranges.}
-\item{target}{Default NULL. Calculate only for target type. If NULL compute mean over all types.}
+\item{target}{Default NULL. Calculate only for target type. If NULL computes for each type + mean over all types.}
 \item{ratio}{Default FALSE. If TRUE, scale the typewise values \code{$M_t$} using formula \code{$(1-M_tau)/lambda_tau$} which equals 1 for Poisson CSR.}
 \item{ntype}{The original mingling index uses \code{knn} neighbourhood type.}
 \item{...}{Further parameters for the function \code{segregationFun}.}
@@ -47,7 +47,7 @@ Graz: The behaviour of the species mingling index \code{$m_{sp}$} in relation to
 
 Lewandowski, Pommerening: Zur Beschreibung der Waldstruktur - Erwartete und beobachtete Arten-Durchmischung. Forstwiss Centralbl, 116:129-139, 1997.
 
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010.
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
 }
 
 \keyword{ package }

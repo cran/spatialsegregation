@@ -12,7 +12,7 @@ simpsonF<-function(X, r=NULL, ...)
 {
 	# check that X is multitype ppp-object
 	verifyclass(X, "ppp")
-	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern.")
+	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern (data.frame-marks not yet supported).")
 	
 	# the main calc function: returns the typewise mean of (deg_i(o)/deg)^2
 	res<-segregationFun(X, r=r, fun="simpson", ...)

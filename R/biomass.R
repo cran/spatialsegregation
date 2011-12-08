@@ -12,7 +12,8 @@ biomassF<-function(X, r=NULL, target=NULL, v2=FALSE, ...)
 {
 	# check that X is ppp-object
 	verifyclass(X, "ppp")
-	if(length(levels(X$marks))<2) stop("Use only on a multitype point pattern.")
+	if(length(levels(X$marks))<2) warning("Expected  multitype point pattern (data.frame-marks not yet supported).")
+	if(length(X$mass)<X$n) stop("Put the biomass information into $mass-element (vector of length n).")
 	# if no target given, calculate for all types
 	if(is.null(target))
 	{

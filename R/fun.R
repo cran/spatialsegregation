@@ -3,13 +3,13 @@
 #  are the wrappers that should be used.
 #
 #Tuomas Rajala <tuomas.rajala@jyu.fi>
-# last change : 280410 
+# last change : 101011 
 #################################################
 #constant: the supported neighbourhoods
 kGraphs<-c("geometric","knn","gabriel","delaunay","bgeometric")
 
 segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL, 
-		                 toroidal=FALSE, minusRange=0,  included=NULL, dbg=FALSE, 
+		                 toroidal=FALSE, minusRange=TRUE,  included=NULL, dbg=FALSE, 
 						 doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE, 
 						 weightMatrix=NULL, translate=FALSE)
 # function types:
@@ -51,7 +51,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 		else
 			parvec <- switch(ntype, "knn"=1:20, 0)
 	}
-	else parvec <- r # r given
+	else parvec <- sort(r) # r given. make sure in order.
 	
 	# TODO: for the c++-module coherence with 'spatgraphs', skip mass geometric
 	if(ntypei>1) ntypei <- ntypei+1  
@@ -80,14 +80,24 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 	# TODO: modify the pp, see below in the function	
 	X<-sg.modify.pp(X)
 	
-	# if a minus  (border) correction is to be used, compute the ones to exclude
-	if(minusRange>0)
+	# if a fixed minus  (border) correction is to be used, compute the ones to exclude
+	if(is.logical(minusRange)){
+		if(minusRange){
+			included<-rep(-1, X$n)
+			if(ntypei!=0) stop("Error segregationFun: adaptive minus-sampling only for geometric neighbourhood.")
+			note<-c(note, "adaptive minus-sampling border correction")
+		}
+	}
+	else if(minusRange>0)
 	{
 		included<-minusID.gf(X, minusRange)
-		note<-c(note,paste("Minus correction, radius=", minusRange, ";", sep=""))
+		note<-c(note,paste("Minus correction, fixed radius=", minusRange, ";", sep=""))
 	}
 	# if translation corrected: Only for mingling and Simpson
-	if(translate) note<-c(note,paste("translation correction", sep=""))
+	if(translate){
+		note<-c(note,paste("translation correction", sep=""))
+		if(funi!=1 & funi!=3) stop("Translation correction available only for Mingling and Simpson functions/indices.")
+	}
 	
 	# if we accept that all points are good for computation, included vector is all 1's
 	if(is.null(included) | length(included)!=X$n) included<-rep(1,X$n)
@@ -153,7 +163,7 @@ sg.modify.pp<-function(pp)
 	pp[["n"]]<-n
 	
 	if(is.null(pp[["window"]])) pp[["window"]]<-list(xrange=range(pp[["x"]]), yrange=range(pp[["y"]]), type="rectangle")
-	
+	if(!is.null(dim(pp$marks)))stop("Error modify.pp: data.frame-marks not yet supported. Put factor marks to $marks or $types, and continuous marks to $mass.")
 	if(length(pp[["mass"]]) != n ) # set the masses
 	{
 		if(length(pp[["marks"]])< n | !is.numeric(pp[["marks"]])) pp$mass<-rep(1.0,n)

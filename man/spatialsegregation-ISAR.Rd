@@ -26,7 +26,7 @@ isar.index(X, r=4, ntype="knn", ...)
 \arguments{
 \item{X}{Multitype point pattern of class \code{ppp} (see package 'spatstat')}
 \item{r}{Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with different ranges.}
-\item{target}{Default NULL. Calculate only for target type. If NULL compute mean over all types.}
+\item{target}{Default NULL. Calculate only for target type. If NULL computes for each type + mean over all types.}
 \item{v2}{Logical. Estimate species-to-neighbours-ratio instead of just total number of species.}
 \item{v3}{Logical. Instead of summing number 1 for each species present, sum the average X$mass of each species present.}
 \item{v4}{Logical. Estimate ISAR using empty space probabilities instead of direct counts (equals the normal version in all my tests)}
@@ -43,7 +43,7 @@ University of Jyvaskyla, Finland
 tuomas.a.rajala@jyu.fi
 }
 \references{
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2010
+Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011
 
 Wiegand, Gunatilleke, Gunatilleke, Huth: How individual species structure diversity in tropical forests. PNAS, nov 16, 2007. 
 }
