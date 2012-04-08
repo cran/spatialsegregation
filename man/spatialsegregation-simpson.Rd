@@ -38,10 +38,10 @@ simpson.index(X, spatial=FALSE, ...)
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.a.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 \references{
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
+Rajala, Illian: A family of spatial biodiversity measures based on graphs, Env. Ecol. Stat. 2012
 
 Shimatani, Kubota: Quantitative assesment of multispecies spatial pattern with high species diversity. Ecological Research, 19, 2004.
 }

@@ -67,7 +67,7 @@ only those points with TRUE (1) value are used in calculation. However, the neig
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.a.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 
 \keyword{ spatial }

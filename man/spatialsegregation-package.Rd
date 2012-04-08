@@ -22,6 +22,8 @@ See the help of the functions for further information.
 
 Package provides an example dataset object called \code{exposurepps}, documented separately.
 
+Also, the Dixon bivariate test based on contingency tables is available.
+
 \preformatted{
 Functions
 ------------------
@@ -35,6 +37,8 @@ mingling.index   -   Shortcut for a single value
 shannon.index    -   -''-
 simpson.index    -   -''-
 isar.index       -   -''-
+
+dixon            -   Dixon's 2-type contingency table tests
 }
 
  
@@ -43,7 +47,7 @@ isar.index       -   -''-
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.a.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 \examples{
 data(exposurepps)
@@ -54,7 +58,7 @@ Graz: The behaviour of the species mingling index \code{$m_{sp}$} in relation to
 
 Lewandowski, Pommerening: Zur Beschreibung der Waldstruktur - Erwartete und beobachtete Arten-Durchmischung. Forstwiss Centralbl, 116:129-139, 1997.
 
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
+Rajala, Illian: A family of spatial biodiversity measures based on graphs, Env. Ecol. Stat. 2012
 
 Reardon, O'sullivan: Measures of spatial segregation. Sociological methodology, 34:121-162, 2004.
 

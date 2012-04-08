@@ -2,7 +2,7 @@
 
 //std::vector<double> simpson0(Graph *graph, double *fpar, int *dbg, int *included)
 //{
-//	if(*dbg)printf("Simpson[");
+//	if(*dbg)Rprintf("Simpson[");
 //
 //	int i;
 //	double value0=0.0;
@@ -16,7 +16,7 @@
 //	value.clear();
 //	value.push_back( 1.0 - value0 );
 //
-//	if(*dbg)printf(" ]");
+//	if(*dbg)Rprintf(" ]");
 //	return value;
 //
 //}
@@ -30,7 +30,7 @@ std::vector<double> simpson(Graph *graph, double *fpar, int *dbg, int *included)
 
 std::vector<double> simpson_typewise(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("typewise[");
+	if(*dbg)Rprintf("typewise[");
 
 	int n=graph->nodelist.size(),i,j,k,l, m,S, N=0;
 	S = graph->pp->getNtypes();
@@ -92,7 +92,7 @@ std::vector<double> simpson_typewise(Graph *graph, double *fpar, int *dbg, int *
 	}
 //	value.at(0) = 1 - value.at(0);
 
-	if(*dbg)printf(" ]");
+	if(*dbg)Rprintf(" ]");
 	return value;
 }
 //EOF

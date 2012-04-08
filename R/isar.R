@@ -12,7 +12,7 @@
 #
 #
 #
-# Author: Tuomas A. Rajala <tuomas.a.rajala@jyu.fi>
+# Author: Tuomas A. Rajala <tuomas.rajala@iki.fi>
 #
 #
 # Last update: 201010

@@ -25,7 +25,7 @@ void Pp::Init(SEXP Argspp)
 	type = INTEGER(getListElement(Argspp, "types"));
 	la = REAL(getListElement(Argspp, "area"));
 	mass = REAL(getListElement(Argspp,"mass"));
-
+	bdist = REAL(getListElement(Argspp,"bdist"));
 	windowArea = *la;
 
 //	set points
@@ -172,10 +172,16 @@ void Pp::calcTransWeights()
 	weight = &Pp::weightTrans;
 }
 /********************************************************************************************/
+//void Pp::calcEdgeDists() {
+//	distEdge.clear();
+//	for(int i=0; i<this->m;i++)
+//		distEdge.push_back(edgeDist(&i));
+//	edgeDistp = &Pp::edgeDistPrecalculated;
+//}
 void Pp::calcEdgeDists() {
 	distEdge.clear();
 	for(int i=0; i<this->m;i++)
-		distEdge.push_back(edgeDist(&i));
+		distEdge.push_back(bdist[i]);
 	edgeDistp = &Pp::edgeDistPrecalculated;
 }
 /********************************************************************************************/

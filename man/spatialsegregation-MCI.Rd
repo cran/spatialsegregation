@@ -27,7 +27,7 @@ mciF(X, r=NULL, target=NULL, ...)
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 \references{
 Podani, Czaran: Individual-centered analysis of mapped point patterns representing multi-species assemblages. J. Veg. Sci. 8: 259-270, 1997.

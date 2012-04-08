@@ -3,14 +3,14 @@
 
 std::vector<double> mingling(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("mingling[");
+	if(*dbg)Rprintf("mingling[");
 	int target_type;
 	int i,j,k,n=0,m, dbg0;
 	double a1[2], neq, mdegi, mdeg, vtemp;
 	std::vector<double> value;
 	value.clear();
 
-	if(*dbg)printf("(type=%i,ratio=%i)",(int)fpar[0],(int)fpar[1]);
+	if(*dbg)Rprintf("(type=%i,ratio=%i)",(int)fpar[0],(int)fpar[1]);
 	if((int)fpar[0]==0)
 	{
 		dbg0 = *dbg;
@@ -61,15 +61,15 @@ std::vector<double> mingling(Graph *graph, double *fpar, int *dbg, int *included
 
 		if(fpar[1]>0) // ratio version (1-M)/ (lambda_t/lambda)
 		{
-			if(*dbg)printf("M=%1.3f -> ",value.at(0));
+			if(*dbg)Rprintf("M=%1.3f -> ",value.at(0));
 			double ala;
 			for(i=0;i < graph->pp->getNtypes(); i++) if(graph->pp->getTypevec(&i) == target_type) break;
 			ala = graph->pp->lambdas[i] / graph->pp->lambda;
 			value.at(0) = (1.0-value.at(0))/(double)ala;
-			if(*dbg)printf("%1.3f",value.at(0));
+			if(*dbg)Rprintf("%1.3f",value.at(0));
 		}
 	}
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 

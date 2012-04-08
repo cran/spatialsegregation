@@ -75,17 +75,17 @@ void Fun::calculate()
 	std::vector<double> resvec;
 	for(i=parvec.size()-1 ; i >= 0 ; i--)
 	{
-		if(*this->dbg)printf("Fun %i/%i: graph[",(int)parvec.size()-i,(int)parvec.size());
+		if(*this->dbg)Rprintf("Fun %i/%i: graph[",(int)parvec.size()-i,(int)parvec.size());
 
 		// update graph
 		graph->par = &parvec[i];
 		graph->sg_calc();
 		*graph->oldpar = *graph->par;
 		if(autoborder){
-			if(*this->dbg)printf("][minus]");
+			if(*this->dbg)Rprintf("][minus]");
 			updateInclude();
 		}
-		if(*this->dbg)printf("Value[ ");
+		if(*this->dbg)Rprintf("Value[ ");
 		// calc index
 		if(*ftype == 1)
 			resvec = mingling(graph, fpar, dbg, included);
@@ -100,7 +100,7 @@ void Fun::calculate()
 		if(*ftype == 6)
 			resvec = biomass(graph, fpar, dbg, included);
 				value.at(i) = resvec;
-		if(*this->dbg)printf(" ]\n");
+		if(*this->dbg)Rprintf(" ]\n");
 	}
 }
 
@@ -108,7 +108,7 @@ void Fun::re_calculate()
 {
 		std::vector<double> resvec;
 		if(autoborder) updateInclude();
-		if(*this->dbg)printf(" Value[ ");
+		if(*this->dbg)Rprintf(" Value[ ");
 		// calc index
 		if(*ftype == 1)
 			resvec = mingling(graph, fpar, dbg, included);
@@ -121,7 +121,7 @@ void Fun::re_calculate()
 		if(*ftype == 5)
 			resvec = mci(graph, fpar, dbg, included);
 		value.at(0) = resvec;
-		if(*this->dbg)printf(" ]\n");
+		if(*this->dbg)Rprintf(" ]\n");
 }
 
 void Fun::updateInclude() {

@@ -40,14 +40,14 @@ mingling.index(X, r=4, ntype="knn", ...)
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.a.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 \references{
 Graz: The behaviour of the species mingling index \code{$m_{sp}$} in relation to species dominance and dispersion. Eur. J. forest research. 123:87-92, 2004.
 
 Lewandowski, Pommerening: Zur Beschreibung der Waldstruktur - Erwartete und beobachtete Arten-Durchmischung. Forstwiss Centralbl, 116:129-139, 1997.
 
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
+Rajala, Illian: A family of spatial biodiversity measures based on graphs, Env. Ecol. Stat. 2012
 }
 
 \keyword{ package }

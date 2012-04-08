@@ -1,10 +1,26 @@
+2.37:
+ - drop startup message
+
+2.361:
+ - bdist.points used for border correction; correction for non-rectangular windows.
+ - needs testing!!!
+ 
+2.35:
+ - update contact email
+2.34:
+ - fix bugs in documentation
+ - add the useDynLib(spatialsegregation) to the NAMESPACE file
+ 
 2.33:
  - improve documentation
  - add parameter checks
+ 
 2.32:
  - adaptive minus-border correction
+
 2.31:
  - NAMESPACE added
+
 2.30:
  - fix oveloading ambiguity in pow-calls, mixed float and double 
  

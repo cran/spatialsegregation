@@ -3,7 +3,7 @@
 
 std::vector<double> mci(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("MCI[%i",(int)fpar[0]);
+	if(*dbg)Rprintf("MCI[%i",(int)fpar[0]);
 	int target_type;
 	int i,j,k,l,n=0,in, dbg0;
 	double a1, *pa, pt, mi;
@@ -54,7 +54,7 @@ std::vector<double> mci(Graph *graph, double *fpar, int *dbg, int *included)
 					else
 						mi += log(pt);
 				}
-//				printf("\n");
+//				Rprintf("\n");
 				value.at(0) = value.at(0) - mi;
 			}
 		}
@@ -65,7 +65,7 @@ std::vector<double> mci(Graph *graph, double *fpar, int *dbg, int *included)
 			value.at(0) += pt*log(pt)+(1-pt)*log(1-pt);
 		}
 	}
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 

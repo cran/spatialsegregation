@@ -5,7 +5,7 @@
 std::vector<double> shannon0(Graph *graph, double *fpar, int *dbg, int *included)
 // this is obsolete: we compute only piitau:s in C and do the scaling in R
 {
-	if(*dbg)printf("shannon[");
+	if(*dbg)Rprintf("shannon[");
 	int i,S=graph->pp->getNtypes();
 	double Eglobal=0.0, Elocal=0.0, ratio, lambda0=0, X;
 	std::vector<double> value;
@@ -37,7 +37,7 @@ std::vector<double> shannon0(Graph *graph, double *fpar, int *dbg, int *included
 
 	value.at(0) =  -Elocal /(double) Eglobal;
 
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 
@@ -50,7 +50,7 @@ std::vector<double> shannon(Graph *graph, double *fpar, int *dbg, int *included)
 
 std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("piitau[");
+	if(*dbg)Rprintf("piitau[");
 	int i,j,k,l,m, S=graph->pp->getNtypes();
 	double piitauj, *piitau = new double[S];
 	std::vector<double> value;
@@ -84,7 +84,7 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 			value.push_back(piitau[i]);
 		}
 	}
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 
@@ -93,7 +93,7 @@ std::vector<double> piitauf(Graph *graph, double *fpar, int *dbg, int *included)
 // then calculate the mean of entropy per type. Returns per type values
 std::vector<double> shannon_v2(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("local entropies[");
+	if(*dbg)Rprintf("local entropies[");
 	int i,j,k, S=graph->pp->getNtypes(), *Htau = new int[S];
 	double v, pii;
 	std::vector<int> counts;
@@ -148,7 +148,7 @@ std::vector<double> shannon_v2(Graph *graph, double *fpar, int *dbg, int *includ
 			value.at(k) = value.at(k)/(double)counts.at(k);
 	}
 
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 
 }

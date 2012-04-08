@@ -45,7 +45,7 @@ SEXP graph_c(SEXP Args)
 	graph.Init(&pp, gtype, par, prepR,       i0, dm1, toroidal, incl,          dm1, dbg);
 	graph.sg_calc();
 
-	if(*dbg)printf("\n");
+	if(*dbg)Rprintf("\n");
 	return graph.toSEXP();
 
 }

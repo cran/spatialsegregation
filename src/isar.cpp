@@ -10,7 +10,7 @@ std::vector<double> isar(Graph *graph, double *fpar, int *dbg, int *included)
 /*********************************************************************************/
 std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("isar[type=%i",(int) fpar[0]);
+	if(*dbg)Rprintf("isar[type=%i",(int) fpar[0]);
 	int i, j, k,l, dbg0,nt=0;
 	double a1[1], m;
 	std::vector<double> value;
@@ -29,7 +29,7 @@ std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *inclu
 				value.push_back(isar_normal(graph,a1,dbg,included).at(0));
 			}
 		}
-//		printf("nt=%i,",nt);
+//		Rprintf("nt=%i,",nt);
 		*dbg = dbg0;
 	}
 	else
@@ -64,14 +64,14 @@ std::vector<double> isar_normal(Graph *graph, double *fpar, int *dbg, int *inclu
 		if(n>0) value.at(0) = value.at(0)/(double)n; // mean value over the species
 	}
 
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 
 /*********************************************************************************/
 std::vector<double> isar_normal_empty(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("isar(empty)[type=%i",(int) fpar[0]);
+	if(*dbg)Rprintf("isar(empty)[type=%i",(int) fpar[0]);
 	int i, j, k,l, dbg0;
 	double a1[1], m;
 	std::vector<double> value;
@@ -124,14 +124,14 @@ std::vector<double> isar_normal_empty(Graph *graph, double *fpar, int *dbg, int 
 			graph->pp->setMass2(&i,&m);
 		}
 	}
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 
 /**********************************************************************************/
 std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("isar (degree weighted)[type=%i",(int) fpar[0]);
+	if(*dbg)Rprintf("isar (degree weighted)[type=%i",(int) fpar[0]);
 	int i, j, n, k,l, dbg0;
 	double m;
 	double a1[1],vi;
@@ -187,7 +187,7 @@ std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *include
 		if(n>0) value.at(0) = value.at(0)/(double)n;
 	}
 
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 
@@ -196,7 +196,7 @@ std::vector<double> isar_wdeg(Graph *graph, double *fpar, int *dbg, int *include
 // not complete.
 std::vector<double> isar_markweighted(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("isar (mass weighted)[type=%i",(int) fpar[0]);
+	if(*dbg)Rprintf("isar (mass weighted)[type=%i",(int) fpar[0]);
 	int i, j, n, k, l, dbg0;
 	double a1[1], m;
 	std::vector<double> value;
@@ -269,6 +269,6 @@ std::vector<double> isar_markweighted(Graph *graph, double *fpar, int *dbg, int 
 
 	}
 
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }

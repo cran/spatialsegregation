@@ -41,7 +41,7 @@ Small functions to manipulate multitype point patterns.
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 
 \keyword{ spatial }

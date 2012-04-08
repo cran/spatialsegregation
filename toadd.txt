@@ -3,3 +3,8 @@
  
 # 091011:
 	- CRAN versio adaptiivisesta borderista
+
+# 090112:
+	- spatstat-in bdist.points-function käyttöön jotta saadaan muutkin kuin nelikulmioikkunat hanskattua.
+	- tarkista shannon: tulee negatiivisia lukuja.	
+	

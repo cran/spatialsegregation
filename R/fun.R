@@ -108,6 +108,9 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 	# this is for the c-side check to know if we are giving a prepGraph
 	prepGraph$'isnull'<- as.integer(is.null(prepGraph))
 	
+	## add the distance to border
+	X$bdist<-bdist.points(X)
+	
 	# set parameters according to prepGraph
 	if(prepGraphIsTarget)
 	{
@@ -150,9 +153,10 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 
 minusID.gf<- function (pp0, minusRange)
 {
-	id <- (pp0$x < (pp0$window$x[2] - minusRange)) & (pp0$x > (pp0$window$x[1] +
-					minusRange)) & (pp0$y < (pp0$window$y[2] - minusRange)) & (pp0$y >
-				(pp0$window$y[1] + minusRange))
+	id <- bdist.points(pp0) > minusRange
+#				(pp0$x < (pp0$window$x[2] - minusRange)) & (pp0$x > (pp0$window$x[1] +
+#					minusRange)) & (pp0$y < (pp0$window$y[2] - minusRange)) & (pp0$y >
+#				(pp0$window$y[1] + minusRange))
 	id
 }
 

@@ -15,7 +15,7 @@ class Pp
 	int tor;
 	int *toroidal;
 	double windowArea;
-
+	double *bdist;
 	double (Pp::*dist)(int*, int*);
 	double (Pp::*weight)(int*, int*);
 	double distEuclidian(int*, int*);

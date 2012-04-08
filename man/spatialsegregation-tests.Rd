@@ -28,7 +28,7 @@ See the paper by Dixon for details.
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 
 \references{

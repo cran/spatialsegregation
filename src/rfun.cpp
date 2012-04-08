@@ -29,69 +29,69 @@ SEXP fun_c(SEXP Args)
 //start parsing the args
 	Args = CDR(Args);
 	dbg = INTEGER(CAR(Args)); // if debug messages
-	if(*dbg)printf("Parsing parameter:");
+	if(*dbg)Rprintf("Parsing parameter:");
 
 	Args = CDR(Args);
 	origpp = CAR(Args);
 	pp.Init(CAR(Args)); // init pp
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	fpar = REAL(CAR(Args)); // additional function parameters.
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	gtype = INTEGER(CAR(Args)); //what type of graph
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	parvec = REAL(CAR(Args)); // graph parvec
 	parn = length(CAR(Args));
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	ftype = INTEGER(CAR(Args)); //what type of function
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	toroidal = INTEGER(CAR(Args)); // if toroidal correction
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	prepR = REAL(CAR(Args)); // if preprocessing R given
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	doDists = INTEGER(CAR(Args)); // if the point-to-point distances should be precalculated and stored
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	translate = INTEGER(CAR(Args)); // if translation weights should be used in mingling&simpson
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 
 	Args = CDR(Args);
 	incl = INTEGER(CAR(Args)); // the point inclusion vector
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	prepGraph = CAR(Args); // possibly precalculated graph
 	prepG = 1- INTEGER(getListElement(prepGraph,"isnull"))[0];
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	prepGraphIsTarget = INTEGER(CAR(Args)); // use only the precalculated graph to get a value
 
-	if(*dbg)printf(".");
+	if(*dbg)Rprintf(".");
 	Args = CDR(Args);
 	weightMatrix = REAL(CAR(Args)); // weightMatrix
 
 
-	if(*dbg)printf("done.\n");
+	if(*dbg)Rprintf("done.\n");
 	par = &parvec[parn-1];
 
 
 
-	if(*dbg)printf("Init graph...");
+	if(*dbg)Rprintf("Init graph...");
 	graph.Init(&pp, gtype, par, prepR , doDists, d0, toroidal, incl, weightMatrix, dbg);
 	if(prepG)// if precalculated graph, set the edges, overrule the prepR-parameter
 	{
@@ -99,16 +99,16 @@ SEXP fun_c(SEXP Args)
 		*graph.oldpar = *par+1;
 	}
 
-	if(*dbg)printf("Init fun...");
+	if(*dbg)Rprintf("Init fun...");
 	fun.Init(&graph, parvec, &parn, gtype, ftype, fpar,translate, incl, dbg);
-	if(*dbg)printf("done.\n");
+	if(*dbg)Rprintf("done.\n");
 
 
-	if(*dbg)printf("Calculating:\n");
+	if(*dbg)Rprintf("Calculating:\n");
 	if(*prepGraphIsTarget){ fun.re_calculate(); }
 	else{  fun.calculate();  }
 
-	if(*dbg)printf("done.\n");
+	if(*dbg)Rprintf("done.\n");
 	return fun.toSEXP(origpp);
 }
 

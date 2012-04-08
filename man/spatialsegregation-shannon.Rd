@@ -40,10 +40,10 @@ The function \code{shannon.index} is a shortcut to get the non-spatial Shannon i
 \author{
 Tuomas Rajala
 University of Jyvaskyla, Finland
-tuomas.a.rajala@jyu.fi
+tuomas.rajala@iki.fi
 }
 \references{
-Rajala, Illian: Graph-based description of mingling and segregation in multitype spatial point patterns. To appear 2011.
+Rajala, Illian: A family of spatial biodiversity measures based on graphs, Env. Ecol. Stat. 2012
 
 Reardon, O'sullivan: Measures of spatial segregation. Sociological methodology, 34:121-162, 2004.
 }

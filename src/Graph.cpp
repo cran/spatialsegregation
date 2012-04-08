@@ -16,7 +16,7 @@ void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDist
 		double *preDists, int *toroidal0, int *inc0, double *wMatrix, int *dbg0)
 {
 	int typein,i,j;
-	if(*dbg0)printf("intializing graph-object... ");
+	if(*dbg0)Rprintf("intializing graph-object... ");
 
 	pp = pp0;
 	par=par0;
@@ -36,7 +36,7 @@ void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDist
 
 	if(weightMatrix[0]<0)getTypeToTypeWeightp = &Graph::getTypeToTypeWeight_all1; // if no weights given
 	else{
-		if(*dbg)printf("Type-to-Type weight matrix received.\n");
+		if(*dbg)Rprintf("Type-to-Type weight matrix received.\n");
 		getTypeToTypeWeightp = &Graph::getTypeToTypeWeight_weighted; // weights given
 	}
 
@@ -54,17 +54,17 @@ void Graph::Init(Pp *pp0, int *gtype0, double *par0, double *prepR0, int *doDist
 
 	if(preDists[0]>=0)
 	{
-		if(*dbg)printf("Setting precalculated distances...");
+		if(*dbg)Rprintf("Setting precalculated distances...");
 		pp->setDists(preDists);
-		if(*dbg)printf("ok. ");
+		if(*dbg)Rprintf("ok. ");
 	}
 	else if(*doDists)  // precalculate distance triangle
 	{
-		if(*dbg)printf("Precalculating distances...");
+		if(*dbg)Rprintf("Precalculating distances...");
 		pp->calcDists();
-		if(*dbg)printf("ok. ");
+		if(*dbg)Rprintf("ok. ");
 	}
-	if(*dbg)printf(" done.\n");
+	if(*dbg)Rprintf(" done.\n");
 
 }
 
@@ -80,11 +80,11 @@ void Graph::setNodelist(std::vector<std::vector<int> > *nodelist_new)
 /********************************************************************************************/
 void Graph::setNodelist(SEXP prepGraph)
 {
-	if(*dbg)printf("setting precalculated edges...");
+	if(*dbg)Rprintf("setting precalculated edges...");
 	nodelist.clear();nodelist.resize(0);
 	VectsxpToVector(getListElement(prepGraph,"edges"), nodelist);
 	preEdges = 1;
-	if(*dbg)printf("ok.");
+	if(*dbg)Rprintf("ok.");
 }
 /********************************************************************************************/
 SEXP Graph::toSEXP()
@@ -179,10 +179,10 @@ void Graph::sg_calc()
 	// preprocess if requested
 	if(prepR[0]>0 && *oldpar<= *par )
 	{
-		if(*dbg)printf("Preprocessing[");
+		if(*dbg)Rprintf("Preprocessing[");
 		this->sg_geometric(prepR);
 		preEdges = 1;
-		if(*dbg)printf("] ok.\n ");
+		if(*dbg)Rprintf("] ok.\n ");
 	}
 	//start the calculation
 	if(*gtype==0) //geometric
@@ -221,7 +221,7 @@ void Graph::sg_geometric()
 
 void Graph::sg_geometric(double *R)
 {
-	if(*dbg)printf("Geometric (R=%f):",*R);
+	if(*dbg)Rprintf("Geometric (R=%f):",*R);
 	int i,j;
 	double dist;
 	for(i=0;i<(pp->size()-1);i++)
@@ -234,12 +234,12 @@ void Graph::sg_geometric(double *R)
 			}
 		}
 	mdeg = this->pp->lambda*PI*(*R)*(*R);
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 }
 
 void Graph::sg_big_geometric()
 {
-	if(*dbg)printf("Big geometric (R=%f):",*par);
+	if(*dbg)Rprintf("Big geometric (R=%f):",*par);
 	int i,j;
 	double dist;
 	for(i=0;i<pp->size();i++)
@@ -253,13 +253,13 @@ void Graph::sg_big_geometric()
 					}
 				}
 	mdeg = this->pp->lambda*PI*(*par)*(*par);
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 	*gtype = 0;
 }
 
 void Graph::sg_shrink_geometric(double *R)
 {
-	if(*dbg)printf("Geometric (R=%f) (shrinking):",*R);
+	if(*dbg)Rprintf("Geometric (R=%f) (shrinking):",*R);
 	int i,j,j0;
 	double dist;
 	std::vector<int> *node;
@@ -279,12 +279,12 @@ void Graph::sg_shrink_geometric(double *R)
 			delete node;
 	}
 	mdeg = this->pp->lambda*PI*(*R)*(*R);
-	if(*dbg)printf(" ok.");
+	if(*dbg)Rprintf(" ok.");
 }
 /********************************************************************************************/
 void Graph::sg_mass_geometric()
 {
-	if(*dbg)printf("Mass-geometric:");
+	if(*dbg)Rprintf("Mass-geometric:");
 	int i,j;
 	double dist;
 	for(i=0;i<pp->size();i++)
@@ -299,7 +299,7 @@ void Graph::sg_mass_geometric()
 				}
 			}
 		}
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 }
 /********************************************************************************************/
 void Graph::sg_knn()
@@ -311,7 +311,7 @@ void Graph::sg_knn()
 	std::vector<int> *node;
 	if(preEdges==0)// if not preprocessed
 	{
-		if(*dbg)printf("%i-nn:",*k);
+		if(*dbg)Rprintf("%i-nn:",*k);
 		double *dists2_i = new double[pp->size()], *dists2_i2 = new double[pp->size()];
 		for(i=0;i<pp->size();i++) //for each point
 		if(inc[i])
@@ -328,7 +328,7 @@ void Graph::sg_knn()
 		}
 	}
 	else{ //preprocessed
-		if(*dbg)printf("%i-nn (shrinking):",*k);
+		if(*dbg)Rprintf("%i-nn (shrinking):",*k);
 		double *dists2_i, *dists2_i2;
 		for(i=0;i<pp->size();i++) //for each point
 		if(inc[i])
@@ -340,7 +340,7 @@ void Graph::sg_knn()
 			if( (int) nodelist[i].size()<*k )
 			{
 				mink = nodelist[i].size();
-				printf("\n preprocessing R too small, not enough neighbours (point #%i)!!\n",i+1);
+				Rprintf("\n preprocessing R too small, not enough neighbours (point #%i)!!\n",i+1);
 			}
 
 			for(l=0;l< (int) nodelist[i].size();l++)
@@ -365,7 +365,7 @@ void Graph::sg_knn()
 		}
 	}
 	mdeg = kk;
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 }
 
 void Graph::sg_shrink_knn()
@@ -380,8 +380,8 @@ void Graph::sg_shrink_knn()
 void Graph::sg_gabriel()
 {
 	int kk = (int) par[0];
-	if(*dbg & (kk>0) )printf("%i-",kk);
-	if(*dbg)printf("Gabriel:");
+	if(*dbg & (kk>0) )Rprintf("%i-",kk);
+	if(*dbg)Rprintf("Gabriel:");
 	int i,j,k, empty,m,l,h;
 	double x0,y0,R2, d;
 	std::vector<int> *node;
@@ -416,7 +416,7 @@ void Graph::sg_gabriel()
 		  }
 	  }
 	else{ // preprocessed: nodelist has the restricted neighbourhoods to look trough
-		if(*dbg)printf("(prepd): ");
+		if(*dbg)Rprintf("(prepd): ");
 		for(i = 0 ; i< pp->size() ;  i++)
 		{
 			if(inc[i])
@@ -455,7 +455,7 @@ void Graph::sg_gabriel()
 		}
 	}
 	mdeg = 4;
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 }
 
 /********************************************************************************************/
@@ -464,12 +464,12 @@ void Graph::sg_delaunay()
 //Naive algorithm, checks the interiors of triangle circumcircles.
 //For 2D patterns
 
-	if(*dbg)printf("Delaunay: ");
+	if(*dbg)Rprintf("Delaunay: ");
 	int i,j,k,l,h;
 	std::vector<int> *node;
 	if(preEdges==0) // no preprocessing done, heavy looping
 	{
-		if(*dbg)printf("(raw):");
+		if(*dbg)Rprintf("(raw):");
 		for(i = 0 ; i< pp->size()-2 ; i++ )
 			for(j = i+1 ; j < pp->size()-1 ; j++ )
 				for(k = j+1 ; k < pp->size() ; k++ )
@@ -481,7 +481,7 @@ void Graph::sg_delaunay()
 					}
 	}
 	else{ // preprocessed: nodelist has the restricted neighbourhoods to look trough for triangles
-		if(*dbg)printf("(prepd): ");
+		if(*dbg)Rprintf("(prepd): ");
 		for(i = 0 ; i< pp->size() ;  i++)
 		{
 			if(inc[i])
@@ -508,13 +508,13 @@ void Graph::sg_delaunay()
 		this->remove_duplicates();
 	}
 	mdeg = 6;
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 
 }
 /********************************************************************************************/
 void Graph::sg_MST()
 {
-  if(*this->dbg) printf("MST:");
+  if(*this->dbg) Rprintf("MST:");
   int i,j,k=0,l=0,zz,k0=0,l0=0;
   int *done = new int[pp->size()],dn;
   double apu0,apu1,apu2;
@@ -552,12 +552,12 @@ void Graph::sg_MST()
     left--;
     this->nodelist[l].push_back(k+1);
   }
-  if(*this->dbg)printf(" Ok.");
+  if(*this->dbg)Rprintf(" Ok.");
 }
 /********************************************************************************************/
 void Graph::sg_markcross()
 {
-	if(*dbg)printf("Markcross: ");
+	if(*dbg)Rprintf("Markcross: ");
 	int i,j;
 	double dist;
 	for(i=0;i<(pp->size()-1);i++)
@@ -569,12 +569,12 @@ void Graph::sg_markcross()
 				nodelist[j].push_back(i+1);
 			}
 		}
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 }
 /********************************************************************************************/
 void Graph::sg_SIG()
 {
-	if(*dbg)printf("Spheres-of-Influence:");
+	if(*dbg)Rprintf("Spheres-of-Influence:");
 	int i,j,dbg0=*dbg;
 	double dist;
 	for(i=0;i<pp->size();i++)
@@ -587,12 +587,12 @@ void Graph::sg_SIG()
 	*dbg=0;
 	sg_markcross();
 	*dbg=dbg0;
-	if(*dbg)printf(" Ok.");
+	if(*dbg)Rprintf(" Ok.");
 }
 /********************************************************************************************/
 void Graph::sg_RST()
 {
-  if(*dbg) printf("Radial Spanning Tree (o=(%f,%f,%f)): ",par[0],par[1],par[2]);
+  if(*dbg) Rprintf("Radial Spanning Tree (o=(%f,%f,%f)): ",par[0],par[1],par[2]);
   nodelist.resize(pp->size()-1);
   int i,j,k,foc_i=pp->size()-1;
   double apu0,apu1,apu2,apu3;
@@ -620,12 +620,12 @@ void Graph::sg_RST()
     }
     if(k>-1) addNew(k,i+1);//e[k*(*n)+i] = 1;
   }
-  if(*dbg) printf(" Ok.");
+  if(*dbg) Rprintf(" Ok.");
 }
 /********************************************************************************************/
 void Graph::sg_RNG()
 {
-	if(*dbg) printf("Relative neighbourhood: ");
+	if(*dbg) Rprintf("Relative neighbourhood: ");
 	int i,j,k,isempty;
     for(i=0;i<(pp->size()-1);i++)
     {
@@ -644,13 +644,13 @@ void Graph::sg_RNG()
         	}
         }
     }
-    if(*dbg) printf(" Ok.");
+    if(*dbg) Rprintf(" Ok.");
 }
 /********************************************************************************************/
 void Graph::sg_CCC()
 {
 	double m=MAX_DOUBLE, mm = -MAX_DOUBLE, apu;
-	if(*dbg) printf("Class Cover Catch for type=%i: ",(int)par[0]);
+	if(*dbg) Rprintf("Class Cover Catch for type=%i: ",(int)par[0]);
 	int i,j, type0=(int)par[0];
 	for(i=0; i<pp->size();i++)
 	{
@@ -673,7 +673,7 @@ void Graph::sg_CCC()
 					if(pp->getT(&j)==type0)
 						if(pp->getDist(&i, &j)< pp->getMass(&i))
 							addNew(i,j+1);
-	if(*dbg) printf(" Ok.");
+	if(*dbg) Rprintf(" Ok.");
 }
 /********************************************************************************************/
 double Attenuate(double r, double alpha)
@@ -683,7 +683,7 @@ double Attenuate(double r, double alpha)
 
 void Graph::sg_STIR()
 {
-	if(*dbg) printf("Signal-To-Noise-Ratio graph, noise=%f,alpha=%f,beta=%f,gamma=%f: ",par[0],par[1],par[2],par[3]);
+	if(*dbg) Rprintf("Signal-To-Noise-Ratio graph, noise=%f,alpha=%f,beta=%f,gamma=%f: ",par[0],par[1],par[2],par[3]);
 	int i,j;
 	double noise0 = par[0], alpha=par[1],beta=par[2],gamma=par[3], *noise = new double[pp->size()], sij,sji,s;
 	//first we compute the interference for each location including the sending transmitter
@@ -708,7 +708,7 @@ void Graph::sg_STIR()
 				addNew(j,i+1);
 			}
 		}
-	if(*dbg) printf(" Ok.");
+	if(*dbg) Rprintf(" Ok.");
 }
 
 
@@ -717,7 +717,7 @@ void Graph::sg_STIR()
 void Graph::sg_cut(double *R)
 {
 	int i,j,k, count=0;
-	if(*dbg)printf("Cutting the graph (R=%f):",*R);
+	if(*dbg)Rprintf("Cutting the graph (R=%f):",*R);
 	std::vector<int > *pnode;
 	for(i=0;i < pp->size();i++)
 	{
@@ -734,7 +734,7 @@ void Graph::sg_cut(double *R)
 		nodelist.at(i).swap(*pnode);
 		delete pnode;
 	}
-	if(*dbg)printf(" ok (%i edges cut). ",count);
+	if(*dbg)Rprintf(" ok (%i edges cut). ",count);
 }
 /********************************************************************************************/
 // prune branches less than lev hops long
@@ -746,14 +746,14 @@ void Graph::sg_prune(double *lev)
 	std::vector<int> branch, *pnode;
 	left.resize(0);
 	branch.resize(0);
-	if(*dbg)printf("Pruning the graph (level=%i):",level);
+	if(*dbg)Rprintf("Pruning the graph (level=%i):",level);
 
 	for(i=0; i < (int)nodelist.size(); i++ ) // get the leaves
 	{
 		if( (int)nodelist.at(i).size() == 1 )
 			left.push_back(i+1);
 	}
-	if(*dbg)printf("found %i leaves, pruning...",(int)left.size());
+	if(*dbg)Rprintf("found %i leaves, pruning...",(int)left.size());
 
 	while(!left.empty()) // go each branch trough starting from the leaf
 	{
@@ -778,7 +778,7 @@ void Graph::sg_prune(double *lev)
 //				if(j == branch.at(i)){notnew=1; break;}
 //			if(notnew)break;
 		}
-//		printf("leaf:%i, branch length: %i\n",left.back(),branch.size());
+//		Rprintf("leaf:%i, branch length: %i\n",left.back(),branch.size());
 		if((int)branch.size() <= level) // if short enough branch, cut it.
 		{
 			pnode = new std::vector<int>;
@@ -797,7 +797,7 @@ void Graph::sg_prune(double *lev)
 		branch.clear();
 		branch.resize(0);
 	}
-	if(*dbg)printf(" Ok (%i branches pruned).",count);
+	if(*dbg)Rprintf(" Ok (%i branches pruned).",count);
 }
 /********************************************************************************************/
 

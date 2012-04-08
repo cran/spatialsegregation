@@ -3,13 +3,13 @@
 
 std::vector<double> biomass(Graph *graph, double *fpar, int *dbg, int *included)
 {
-	if(*dbg)printf("biomass[");
+	if(*dbg)Rprintf("biomass[");
 	int target_type;
 	int i,j,k,n=0,m,dbg0;
 	double a1[2], vtemp;
 	std::vector<double> value;
 	value.clear();
-	if(*dbg)printf("(type=%i, mean=%i)",(int)fpar[0], (int) fpar[1]);
+	if(*dbg)Rprintf("(type=%i, mean=%i)",(int)fpar[0], (int) fpar[1]);
 	if((int)fpar[0]==0)
 	{
 		dbg0 = *dbg;
@@ -57,7 +57,7 @@ std::vector<double> biomass(Graph *graph, double *fpar, int *dbg, int *included)
 		if(n>0) value.at(0) = value.at(0)/(double)n;
 	}
 
-	if(*dbg)printf("]");
+	if(*dbg)Rprintf("]");
 	return value;
 }
 
