@@ -1,9 +1,9 @@
-102028b4dafc3d9dbba1124d09bf20dc *DESCRIPTION
+276befcc18bebcf6832b822f0143e1f2 *DESCRIPTION
 762d725660a00daa56496f317ca225eb *NAMESPACE
 e3d6cef932b193bf8e5d30d5995ed5cb *R/First.R
 25ae7e981990ba6d9b05f3e0272ccf02 *R/biomass.R
 dbf4f43bd9a15f0dc0a4c762603dda22 *R/fclass.R
-ef65627715af48bd914a03dce03ee08d *R/fun.R
+bd4e3201d0d0b4d06e8a81ab4557f9cd *R/fun.R
 ca1bc1f96c28eaa57e0e83ec9354fa3e *R/isar.R
 9d627c84ba89f194df367fc69e748df8 *R/isar_old.R
 2057c294bf866f44e29358bcd8f89213 *R/mci.R
@@ -15,7 +15,7 @@ f871acb0cfab7249f9d9612c06efa633 *R/shannon_old.R
 b0289dde6c9707e6b3de8a7cd4c98624 *R/simpson.R
 21c47d6f85325d7b7bb77da3c3106123 *R/simpson_old.R
 0140407453af199700911bbb16b2be48 *R/tests.R
-47cc031cf592f1eb92b94bf97b210d7b *change.log
+91d926f1f32554c932f214d6aff72252 *change.log
 bed624fedaa7d2227126d7d83518f017 *data/exposurepps.rda
 db1016d85dc5891220fce0c5616912e7 *man/spatialsegregation-ISAR.Rd
 55bea16ef92ec8bd400ced49b1f2cac2 *man/spatialsegregation-MCI.Rd

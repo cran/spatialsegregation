@@ -1,3 +1,5 @@
+2.38:
+ - bug: dixon did not add border distances to the pp object, C side error. Moved the bdist-computation to sg.modify.pp
 2.37:
  - drop startup message
 
