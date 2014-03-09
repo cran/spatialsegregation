@@ -14,9 +14,9 @@ shortcuts \code{minglingF}, \code{isarF}, \code{shannonF} and \code{simpsonF} hi
 
 \usage{
 segregationFun(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL, 
-		       toroidal=FALSE, minusRange=TRUE,  included=NULL, dbg=FALSE, 
-			   doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE,
-			   weightMatrix=NULL, translate=FALSE)
+toroidal=FALSE, minusRange=TRUE,  included=NULL, dbg=FALSE, 
+doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE,
+weightMatrix=NULL, translate=FALSE)
 }
 
 \arguments{

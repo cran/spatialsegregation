@@ -11,9 +11,9 @@ export(biomassF,
 	   shannon.index,
 	   simpsonF,
 	   simpson.index,
-	   dixon,
 	   segregationFun,
+     dixon,
 	   print.segtest)
-
+import(spatstat)
 useDynLib(spatialsegregation)
 	   
