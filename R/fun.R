@@ -1,12 +1,46 @@
-#the generic function for segregation measures
-# isarF, minglingF, shannonF, simpsonF and mciF
-#  are the wrappers that should be used.
-#
-#Tuomas Rajala <tuomas.rajala@jyu.fi>
-# last change : 101011 
+# last change : 090715
 #################################################
+
 #constant: the supported neighbourhoods
 kGraphs<-c("geometric","knn","gabriel","delaunay","bgeometric")
+
+
+
+#' Main computer function for spatialsegregation
+#' 
+#' Compute the spatial exposure (segregation vs. mingling) features from a given multitype point pattern. Usage of  shortcuts \code{minglingF}, \code{isarF}, \code{shannonF}, \code{simpsonF} etc. highly recommended.
+#' 
+#' @param X Multitype point pattern of class \code{ppp} (see package 'spatstat')
+#' @param fun Default "isar". Takes "isar","mingling","shannon", "simpson", "mci" and "biomass", see below.
+#' @param r Vector for the neighbourhood defining graph, e.g. "geometric" graph with different ranges. See below.
+#' @param ntype Default "geometric". Type of the neighbourhood graph. Accepts: "knn", "geometric", "delauney", "gabriel".
+#' @param funpars Default NULL. Parameter(s) for the measure. Mingling: c(i,j), where i= only for type i (0 for all), j=1 -> ratio version. ISAR: i, i=type (integer). Shannon: 0 or 1, see \code{v2} in \code{shannonF}. Simpson: none.
+#' @param toroidal Default FALSE. If TRUE, use a toroidal correction in distance calculation. Works at the moment only for rectangular windows and "geometric" or "knn" graph.
+#' @param minusRange If TRUE, adaptive minus-sampling is employed. Overrides \code{included}-vector. If given as a positive number, \code{included}-vector is created with points with distance atleast minusRange from the border.
+#' @param included boolean-vector of length |pp|. included[i]==TRUE => pp[i] included in calculations. Used for minus-sampling border correction.
+#' @param dbg Default FALSE. Print additional runtime texts.
+#' @param doDists Default TRUE. Precalculate distances for speed. Be aware of memory requirement n*(n-1)/2
+#' @param prepRange Default 0. If >0, shrink the search space for neighbourhoods by searching only points within distance R i.e. precalculates a geometric graph.
+#' @param prepGraph Precalculated graph for the point pattern. If given, The \code{prepRange}, \code{dodists} and \code{toroidal} are ignored and calculations are carried using the prepGraph as a starting point. Useful for huge datasets.
+#' @param prepGraphIsTarget If TRUE, precalculated graph \code{prepGraph} is used to calculate a single function value directly, all other neighbourhood parameters are ignored.
+#' @param weightMatrix See \code{isarF} for this.
+#' @param translate Use translation correction (see e.g. documentation of \code{spatstat::Kest} for details). Used only in mingling index.
+#' 
+#' @details 
+#' This is the general function for computing the spatial exposure (segregation/mingling) features. Used by \link{minglingF}, \link{shannonF}, \link{simpsonF}, \link{isarF}, \link{mciF} and \link{biomassF}, which should be preferred for better (and nicer) outcome. 
+#' 
+#' Possible neighbourhood relations include geometric, k-nearest neighbours, Delaunay, and Gabriel. Delaunay and Gabriel are parameter free, so given \code{r} has no meaning. In geometric graph, \code{r} is a vector of distances (sizes of the surrounding 'disc') and for k-nn \code{r} is the vector of neighbourhood abundances (so r is k in k-nn) for each point to consider in the calculation of the spatial exposure measures. In general, the basic type of spatial summary in literature uses 'geometric' graph  with several ranges. 
+#'
+#'For \code{geometric} and \code{knn}, the calculations are done by shrinking the graph given by the largest value of \code{r}. If dealing with large datasets, it is advisable to give preprocessing range, \code{prepRange}. The algorithm first calculates a geometric graph with parameter \code{prepRange}, and uses this as basis for finding the needed neighbourhoods. Speeds up calculations, but make sure \code{prepRange} is large enough e.g. in \code{geometric}, \code{prepRange}>max(\code{r}). \code{prepGraph}, if given, works as the preprocessed geometric graph (overrides prepRange), and can be computed using the package \code{spatgraphs}; useful for huge datasets, where the dominating graph needs to be computed only one. The \code{doDists} option speeds up calculations by precomputing the pairwise distances but requires  approx. n*(n-1)/2 * 32 bytes of memory. 
+#'
+#' For border correction, use \code{minusRange} for reduced border correction (for rectangular windows only). If using \code{geometric} or \code{knn} neighbourhoods, the option \code{toroidal} for toroidal correction is also available. The vector \code{included} can be given for more specific \code{minus}-correction, only those points with TRUE (or 1) value are used in calculation. However, the neighbourhoods will include all points.
+#' 
+#' @return 
+#' 	Returns an object of class \code{fv}, see spatstat for more details. Basically a list with the computed values and parameter values.
+#' 	
+#' @export
+#' @useDynLib spatialsegregation
+#' @import spatstat
 
 segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL, 
 		                 toroidal=FALSE, minusRange=TRUE,  included=NULL, dbg=FALSE, 
@@ -128,6 +162,7 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 					as.numeric(weightMatrix),
 					PACKAGE="spatialsegregation")
 
+	
 	# turn the result list into a matrix: 1 col per valuetype, 1 row per parameter
 	a<-t(matrix(unlist(res),ncol=length(parvec)))
 
@@ -139,23 +174,19 @@ segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL,
 	unitname<-switch(ntypei,"1"="range","2"="neighbour",NULL)
 	list(v=a, included=as.logical(included), 
 		 parvec=parvec, unitname=unitname, 
-		 ntype=ntype, note=note, point.values=X$mass, point.values2=X$mass2
+		 ntype=ntype, note=note, point.values=X$mass2 # point.values2=X$mass2
         )
 }
 
 
 #####################
-
-#minusID.gf<- function (pp0, minusRange)
-#{
-#	id <- bdist.points(pp0) > minusRange
-##				(pp0$x < (pp0$window$x[2] - minusRange)) & (pp0$x > (pp0$window$x[1] +
-##					minusRange)) & (pp0$y < (pp0$window$y[2] - minusRange)) & (pp0$y >
-##				(pp0$window$y[1] + minusRange))
-#	id
-#}
-
-#####################
+#' Prepare the input data pattern object
+#' 
+#' Prepares given point pattern object for computations.
+#' 
+#' @param pp Point pattern object
+#' 
+#' @export
 sg.modify.pp<-function(pp)
 {
 	n<-length(pp[["x"]])
@@ -195,6 +226,9 @@ sg.modify.pp<-function(pp)
 	# include area
 	pp$area<-as.numeric(area.owin(pp$window))
 	
+	# add a container for pointwise values
+	pp$mass2 <- rep(0, pp$n)
+	#
 	pp
 }
 

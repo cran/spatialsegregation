@@ -1,11 +1,22 @@
-# mci.R
-# 
-# Mean compositional information for multitype spatial point pattern and graphs
-# 
-# Author: Tuomas Rajala <tuomas.rajala@jyu.fi>
-###############################################################################
+#' Mean Composite Information
+#' 
+#' Compute the Mean Composite Information for a given multitype point pattern. See Podani\&Czaran 1997.
 
-# mciF
+#' @param X Multitype point pattern of class \code{ppp} (see package 'spatstat')
+#' @param r Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with different ranges.
+#' @param target If given, look at the surroundings of this type only.
+#' @param ... Further parameters for the function \code{segregationFun}.
+#'
+#' @return 
+#' 
+#'  Returns an \code{fv}-object, see \code{spatstat} for more information.
+#'
+#' @references 
+#' 
+#' Podani, Czaran: Individual-centered analysis of mapped point patterns representing multi-species assemblages. J. Veg. Sci. 8: 259-270, 1997.
+#'
+#' @export
+
 
 mciF<-function(X, r=NULL, target=NULL, ...)
 {

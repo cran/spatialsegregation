@@ -30,10 +30,12 @@ std::vector<double> biomass(Graph *graph, double *fpar, int *dbg, int *included)
 	{
 		target_type = (int) fpar[0];
 		value.push_back(0.0);
+		// double ko = 99;
 		double vi;
 		for(i=0;i< (int)graph->nodelist.size() ;i++)
 			if(included[i] &&  graph->pp->getT(&i) == target_type)
 			{
+			  //Rprintf("%f", graph->pp->getMass(&i));
 				vi = 0.0;
 				m = graph->nodelist[i].size();
 				if(m>0)
@@ -47,12 +49,14 @@ std::vector<double> biomass(Graph *graph, double *fpar, int *dbg, int *included)
 
 					if(fpar[1]>0) // if mean version
 					{
-						vtemp = vi/(double)m;
-						graph->pp->setMass2(&i, &vtemp);
+						vi = vi/(double)m;
+						//graph->pp->setMass2(&i, &vtemp);
 					}
-					else graph->pp->setMass2(&i, &vi);
-					value.at(0) = value.at(0) + graph->pp->getMass2(&i);
+					//else graph->pp->setMass2(&i, &vi);
+					value.at(0) = value.at(0) + vi;//graph->pp->getMass2(&i);
 				}
+				// graph->pp->setMass2(&i, &ko);
+				//Rprintf(" - %f\n", graph->pp->getMass(&i));
 			}
 		if(n>0) value.at(0) = value.at(0)/(double)n;
 	}

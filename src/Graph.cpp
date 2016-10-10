@@ -1,3 +1,4 @@
+#include <Rmath.h>
 #include "Graph.h"
 
 #ifndef MAX_DOUBLE
@@ -391,8 +392,8 @@ void Graph::sg_gabriel()
 	  {
 		  for(j=i+1;j<pp->size();j++)
 		  {
-			  x0 = fabs(pp->getX(&i)-pp->getX(&j))/2.0+fmin(pp->getX(&i),pp->getX(&j));
-			  y0 = fabs(pp->getY(&i)-pp->getY(&j))/2.0+fmin(pp->getY(&i),pp->getY(&j));
+			  x0 = fabs(pp->getX(&i)-pp->getX(&j))/2.0+fmin2(pp->getX(&i),pp->getX(&j));
+			  y0 = fabs(pp->getY(&i)-pp->getY(&j))/2.0+fmin2(pp->getY(&i),pp->getY(&j));
 			  R2 = ( pow(pp->getX(&i)-pp->getX(&j),2) + pow(pp->getY(&i)-pp->getY(&j),2) )/4.0;
 			  //		brute force
 			  empty = 1+kk;
@@ -425,8 +426,8 @@ void Graph::sg_gabriel()
 				for( l=0 ; l < (int) this->nodelist[i].size(); l++ )
 				{
 					j = this->nodelist[i][l]-1;
-					x0 = fabs(this->pp->getX(&i)-this->pp->getX(&j))/2.0+fmin(this->pp->getX(&i),this->pp->getX(&j));
-					y0 = fabs(this->pp->getY(&i)-this->pp->getY(&j))/2.0+fmin(this->pp->getY(&i),this->pp->getY(&j));
+					x0 = fabs(this->pp->getX(&i)-this->pp->getX(&j))/2.0+fmin2(this->pp->getX(&i),this->pp->getX(&j));
+					y0 = fabs(this->pp->getY(&i)-this->pp->getY(&j))/2.0+fmin2(this->pp->getY(&i),this->pp->getY(&j));
 					R2 = (pow(this->pp->getX(&i)-this->pp->getX(&j),2) + pow(this->pp->getY(&i)-this->pp->getY(&j),2) )/4.0;
 					empty = 1+kk;
 					for(m=0; m <(int) this->nodelist[i].size();m++) // the small ball is included in the preprocessing ball
@@ -581,7 +582,7 @@ void Graph::sg_SIG()
 	{
 		dist = MAX_DOUBLE;
 		for(j=0;j<pp->size();j++)
-			if(i!=j) dist = fmin(dist, pp->getDist(&i, &j));
+			if(i!=j) dist = fmin2(dist, pp->getDist(&i, &j));
 		pp->setMass(&i,&dist);
 	}
 	*dbg=0;
@@ -661,7 +662,7 @@ void Graph::sg_CCC()
 			for(j=0;j<pp->size();j++)
 				if( (j!=i) & (pp->getT(&j)!=type0) )
 				{
-					apu = fmin(pp->getMass(&i),pp->getDist(&i, &j));
+					apu = fmin2(pp->getMass(&i),pp->getDist(&i, &j));
 					pp->setMass(&i, &apu);
 				}
 		}
@@ -701,7 +702,7 @@ void Graph::sg_STIR()
 			sji = pp->getMass(&j)*Attenuate(pp->getDist(&i, &j),alpha);
 			sij = sij/(noise0 + gamma* (noise[j]-sij));
 			sij = sji/(noise0 + gamma* (noise[i]-sji));
-			s = fmin(sij,sji);
+			s = fmin2(sij,sji);
 			if(s >= beta )
 			{
 				addNew(i,j+1);

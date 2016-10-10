@@ -1,8 +1,20 @@
-# Tests for segregation
 
-##### For two species patterns:
+#' Dixon's 2-type contingency table tests
+#'
+#' 
+#' @param X bivariate ppp
+#' @param prepR for large patterns, makes it a bit easier to find nearest neighbours.
+#' @details   Computes the tests of segregation using nearest neighbour contingency tables introduced 
+#' by Philip Dixon in his paper "Testing spatial segregation using a nearest-neighbor contingency table",
+#' Ecology, 75, p.1940-1948 (1994). The tests are an improvement on the Pielou's test of segregation.
 
-dixon<-function(X, prepR=0) {
+#' The test is defined only for two-type spatial pattern. 
+#' @references Philip Dixon: "Testing spatial segregation using a nearest-neighbor contingency table",
+#' Ecology, 75, p.1940-1948 (1994).
+#'
+#' @export
+
+dixon <- function(X, prepR=0) {
 	dbg<-FALSE
 	if(!is.factor(X$marks))warning("Marks of X are not in factor form. Transforming.")
 	X$marks<-as.factor(X$marks)
@@ -104,7 +116,13 @@ dixon<-function(X, prepR=0) {
 	fx
 }
 
-# print method
+#' Print Segtest Objects
+#' 
+#' @param x segtest object
+#' @param ... ignored
+#' 
+#' @import stats
+#' @export
 print.segtest<-function(x, ...)
 {
 	

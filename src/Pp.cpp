@@ -1,4 +1,5 @@
 //spatgraphs
+#include <Rmath.h>
 #include "Pp.h"
 /********************************************************************************************/
 Pp::Pp()
@@ -82,9 +83,9 @@ double Pp::distEuclidian(int *i, int *j)
 		if(*i>*j) return distEuclidian(j, i);
 		if(*toroidal)
 			return	sqrt(
-						pow( fminf( xlim[1]-xlim[0]-fabs(points.at(*i).getX()-points.at(*j).getX()) , fabs(points.at(*i).getX()-points.at(*j).getX()) ) ,2.0F) +
-						pow( fminf( ylim[1]-ylim[0]-fabs(points.at(*i).getY()-points.at(*j).getY()) , fabs(points.at(*i).getY()-points.at(*j).getY()) ) ,2.0F) +
-						pow( fminf( zlim[1]-zlim[0]-fabs(points.at(*i).getZ()-points.at(*j).getZ()) , fabs(points.at(*i).getZ()-points.at(*j).getZ()) ) ,2.0F)   );
+						pow( fmin2( xlim[1]-xlim[0]-fabs(points.at(*i).getX()-points.at(*j).getX()) , fabs(points.at(*i).getX()-points.at(*j).getX()) ) ,2.0F) +
+						pow( fmin2( ylim[1]-ylim[0]-fabs(points.at(*i).getY()-points.at(*j).getY()) , fabs(points.at(*i).getY()-points.at(*j).getY()) ) ,2.0F) +
+						pow( fmin2( zlim[1]-zlim[0]-fabs(points.at(*i).getZ()-points.at(*j).getZ()) , fabs(points.at(*i).getZ()-points.at(*j).getZ()) ) ,2.0F)   );
 		else
 			return 	sqrt(
 					pow( points.at(*i).getX()- points.at(*j).getX()  ,2.0) +
@@ -186,7 +187,7 @@ void Pp::calcEdgeDists() {
 }
 /********************************************************************************************/
 double Pp::edgeDist(int *i) {
-	return (double)fminf(fminf(xlim[1]-getX(i), getX(i)-xlim[0]), fminf(ylim[1]-getY(i),getY(i)-ylim[0]));
+	return (double)fmin2(fmin2(xlim[1]-getX(i), getX(i)-xlim[0]), fmin2(ylim[1]-getY(i),getY(i)-ylim[0]));
 }
 double Pp::edgeDistPrecalculated(int *i) {
 	return distEdge.at(*i);

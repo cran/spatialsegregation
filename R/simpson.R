@@ -1,14 +1,35 @@
+# last change: 090715
+###############################################################################
 
-###############################################################################
-# Spatial Simpson index
-#
-#
-# Author: Tuomas Rajala <tarajala@maths.jyu.fi>
-# last change: 060909
-###############################################################################
+#' Spatial Simpson index
+#' 
+#' Compute the spatial and non-spatial Simpson index for a given multitype point pattern.
+#' 
+#' @param X Multitype point pattern of class \code{ppp} (see package 'spatstat')
+#' @param r Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with different ranges.
+#' @param spatial If FALSE, return the classical aspatial index value.
+#' @param ... Further parametes for the function \code{\link{segregationFun}}.
+#' 
+#' @details 
+#' 
+#' The form of Simpson index is  \var{S = 1 - sum pi_tau}, where the sum is over the types of the pattern, and \var{pi_tau} is like
+#' in Shimatani\& Kubota 2004.
+#' The function \code{simpsonF} is the main calculation function. Uses function \code{\link{segregationFun}}.
+#' 
+#' The function \code{simpson.index} is a shortcut to get a single value for the pattern using 4-nearest neighbours graph by default. 
+#'
+#' @return
+#' If spatial, returns an \code{fv}-object, see \code{spatstat} for more information. Otherwise a numeric value.
+#'
+#' @references 
+#' Rajala, Illian: A family of spatial biodiversity measures based on graphs, Env. Ecol. Stat. 2012
+#' 
+#' Shimatani, Kubota: Quantitative assesment of multispecies spatial pattern with high species diversity. Ecological Research, 19, 2004.
+#'   
+#' @aliases simpson.index
+#' @export
 
 simpsonF<-function(X, r=NULL, ...)
-#Simpson index for graphs, with possibly various range-parameters
 {
 	# check that X is multitype ppp-object
 	verifyclass(X, "ppp")
@@ -54,8 +75,8 @@ simpsonF<-function(X, r=NULL, ...)
 }
 
 ####################################################################################################
-#Simpson index, just one value
-
+#' @export
+#' @describeIn simpsonF The Spatial Simpson Index 
 simpson.index<-function(X, spatial=FALSE, ...)
 {
 	#the traditional aspatial Simpson index 1-D

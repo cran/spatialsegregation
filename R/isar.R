@@ -1,23 +1,40 @@
-# ISAR or local species richness summary for multitype spatial point pattern
-#
-# Desc: 
-#   Estimate the number of types present in the neighbourhoods of points
-#
-#
-# Neighbourhood definitions (parameter): 
-#   Geometric (r)
-#   k-nearest neighbours (k)
-#	Gabriel (none)
-#   Delauney triangulation (none)
-#
-#
-#
-# Author: Tuomas A. Rajala <tuomas.rajala@iki.fi>
-#
-#
-# Last update: 201010
+# Last update: 090715
 ###############################################################################
 
+#' Individual Species Area Relationship
+#' 
+#' Compute the Individual Species Area Relationship ( ISAR ) or Local Species
+#' Richness, for a given multitype point pattern.
+#' @param X Multitype point pattern of class \code{ppp} (see package 'spatstat')
+#' @param r Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with
+#'   different ranges.
+#' @param target Default NULL. Calculate only for target type. If NULL computes
+#'   for each type + mean over all types.
+#' @param v2 Logical. Estimate species-to-neighbours-ratio instead of just total
+#'   number of species.
+#' @param v3 Logical. Instead of summing number 1 for each species present, sum
+#'   the average X$mass of each species present.
+#' @param v4 Logical. Estimate ISAR using empty space probabilities instead of
+#'   direct counts (equals the normal version in all my tests)
+#' @param ntype Sets the n'hood type to \code{knn} by default in isar.index.
+#' @param ... Further parameters for the function \code{segregationFun}.
+#'   
+#' @details Extension of ISAR-function introduced in WGGH07. In effect
+#' calculates the expected amount of different types present in the
+#' neighbourhood of a point in the pattern.
+#' 
+#' The function \code{isarF} is the calculation function for different
+#' neighbourhoods. Uses function \code{\link{segregationFun}}.
+#' 
+#' The function \code{isar.index} is a shortcut to get a single value for the
+#' pattern. Uses 4-nn graph by default.
+#' 
+#' @references 
+#' Rajala, Illian: A family of spatial biodiversity measures based on graphs, Env. Ecol. Stat. 2012
+#' 
+#' Wiegand, Gunatilleke, Gunatilleke, Huth: How individual species structure diversity in tropical forests. PNAS, nov 16, 2007. 
+#' 
+#' @export
 isarF<-function(X, r=NULL, target=NULL, v2=FALSE, v3=FALSE, v4=FALSE, ... )
 {
 	# check that X is ppp-object
@@ -123,6 +140,8 @@ isarF<-function(X, r=NULL, target=NULL, v2=FALSE, v3=FALSE, v4=FALSE, ... )
 }
 
 ###############################################################################
+#' @export
+#' @describeIn isarF Shortcut for 4-nearest neighbour value.
 isar.index<-function(X, r=4, ntype="knn", ...)
 {
 	if(length(r)>1)stop("Use isarF for vector of parameter values.")

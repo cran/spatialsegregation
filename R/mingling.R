@@ -1,12 +1,42 @@
-# mingling.R
-# 
-# Spatial mingling index for multitype spatial point pattern and graphs
-# 
-# Author: Tuomas Rajala <tarajala@maths.jyu.fi>
-###############################################################################
-
-# minglingF
-
+#' Spatial Minling index
+#' 
+#' Compute the Mingling index for a given multitype point pattern.
+#' 
+#' @param X Multitype point pattern of class \code{ppp} (see package 'spatstat')
+#' @param r Vector of sizes for neighbourhoods, e.g. \code{geometric} graph with
+#'   different ranges.
+#' @param  target Default NULL. Calculate only for target type. If NULL computes
+#'   for each type + mean over all types.
+#' @param ratio Default FALSE. If TRUE, scale the typewise values \code{$M_t$}
+#'   using formula \code{$(1-M_tau)/lambda_tau$} which equals 1 for Poisson CSR.
+#' @param ntype The original mingling index uses \code{knn} neighbourhood type.
+#' @param  ... Further parameters for the function \code{segregationFun}.
+#'   
+#' @details Extension of Mingling index introduced by Lewandowski\&Pommerening
+#' 1997. Measures the proportion of alien points in the neighbourhood of a
+#' specific type typical point of the pattern.
+#' 
+#' If no specific type is given, the function takes mean over all types. A
+#' typewise value is more useful, so they are also included.
+#' 
+#' The function \code{minglingF} is the main calculation function. Uses function
+#' \code{\link{segregationFun}}.
+#' 
+#' The function \code{mingling.index} is a shortcut to get a single value for
+#' the pattern. Uses 4-nn graph by default, which is the original Mingling index
+#' used by Lewandowski\&Pommerening 1997 and Graz 2004.
+#' 
+#' @references Graz: The behaviour of the species mingling index \code{$m_{sp}$}
+#' in relation to species dominance and dispersion. Eur. J. forest research.
+#' 123:87-92, 2004.
+#' 
+#' Lewandowski, Pommerening: Zur Beschreibung der Waldstruktur - Erwartete und
+#' beobachtete Arten-Durchmischung. Forstwiss Centralbl, 116:129-139, 1997.
+#' 
+#' Rajala, Illian: A family of spatial biodiversity measures based on graphs,
+#' Env. Ecol. Stat. 2012
+#' 
+#' @export
 
 minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 #Mingling index for geometric graph with various range-parameters
@@ -117,6 +147,8 @@ minglingF<-function(X, r=NULL, target=NULL, ratio=FALSE, ...)
 
 
 ###############################################################################
+#' @export
+#' @describeIn minglingF Shortcut to 4-nearest neighbours index.
 mingling.index<-function(X, r=4, ntype="knn", ...)
 {
 	if(length(r)>1)stop("Use minglingF for vector of parameter values.")
