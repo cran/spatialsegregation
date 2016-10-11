@@ -83,14 +83,14 @@ double Pp::distEuclidian(int *i, int *j)
 		if(*i>*j) return distEuclidian(j, i);
 		if(*toroidal)
 			return	sqrt(
-						pow( fmin2( xlim[1]-xlim[0]-fabs(points.at(*i).getX()-points.at(*j).getX()) , fabs(points.at(*i).getX()-points.at(*j).getX()) ) ,2.0F) +
-						pow( fmin2( ylim[1]-ylim[0]-fabs(points.at(*i).getY()-points.at(*j).getY()) , fabs(points.at(*i).getY()-points.at(*j).getY()) ) ,2.0F) +
-						pow( fmin2( zlim[1]-zlim[0]-fabs(points.at(*i).getZ()-points.at(*j).getZ()) , fabs(points.at(*i).getZ()-points.at(*j).getZ()) ) ,2.0F)   );
+						pow( fmin2( xlim[1]-xlim[0]-fabs(points.at(*i).getX()-points.at(*j).getX()) , fabs(points.at(*i).getX()-points.at(*j).getX()) ) ,2) +
+						pow( fmin2( ylim[1]-ylim[0]-fabs(points.at(*i).getY()-points.at(*j).getY()) , fabs(points.at(*i).getY()-points.at(*j).getY()) ) ,2) +
+						pow( fmin2( zlim[1]-zlim[0]-fabs(points.at(*i).getZ()-points.at(*j).getZ()) , fabs(points.at(*i).getZ()-points.at(*j).getZ()) ) ,2)   );
 		else
 			return 	sqrt(
-					pow( points.at(*i).getX()- points.at(*j).getX()  ,2.0) +
-					pow( points.at(*i).getY()- points.at(*j).getY()  ,2.0) +
-					pow( points.at(*i).getZ()- points.at(*j).getZ()  ,2.0)   );
+					pow( points.at(*i).getX()- points.at(*j).getX()  ,2) +
+					pow( points.at(*i).getY()- points.at(*j).getY()  ,2) +
+					pow( points.at(*i).getZ()- points.at(*j).getZ()  ,2)   );
 }
 /********************************************************************************************/
 double Pp::distPrecalculated(int *i, int *j)
