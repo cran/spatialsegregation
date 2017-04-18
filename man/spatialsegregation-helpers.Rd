@@ -40,7 +40,6 @@ Small functions to manipulate multitype point patterns.
 
 \author{
 Tuomas Rajala
-University of Jyvaskyla, Finland
 tuomas.rajala@iki.fi
 }
 

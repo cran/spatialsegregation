@@ -24,4 +24,3 @@ The test is defined only for two-type spatial pattern.
 Philip Dixon: "Testing spatial segregation using a nearest-neighbor contingency table",
 Ecology, 75, p.1940-1948 (1994).
 }
-

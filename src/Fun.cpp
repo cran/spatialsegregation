@@ -60,11 +60,11 @@ SEXP Fun::toSEXP(SEXP pp)
 		UNPROTECT(1);
 		delete onevalue;
 	}
-	UNPROTECT(1);
 //	set the mass2 element of pp
 	m = REAL(getListElement(pp,"mass2"));
 	for(int i=0; i< graph->pp->size();i++)
 		m[i] = graph->pp->getMass2(&i);
+	UNPROTECT(1);
 	return res;
 }
 

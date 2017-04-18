@@ -12,4 +12,3 @@ sg.modify.pp(pp)
 \description{
 Prepares given point pattern object for computations.
 }
-

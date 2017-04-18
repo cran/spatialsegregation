@@ -7,7 +7,7 @@
 segregationFun(X, fun = "isar", r = NULL, ntype = "geometric",
   funpars = NULL, toroidal = FALSE, minusRange = TRUE, included = NULL,
   dbg = FALSE, doDists = FALSE, prepRange = 0, prepGraph = NULL,
-  prepGraphIsTarget = FALSE, weightMatrix = NULL, translate = FALSE)
+  prepGraphIsTarget = FALSE, weightMatrix = NULL, translate = FALSE, ...)
 }
 \arguments{
 \item{X}{Multitype point pattern of class \code{ppp} (see package 'spatstat')}
@@ -39,6 +39,8 @@ segregationFun(X, fun = "isar", r = NULL, ntype = "geometric",
 \item{weightMatrix}{See \code{isarF} for this.}
 
 \item{translate}{Use translation correction (see e.g. documentation of \code{spatstat::Kest} for details). Used only in mingling index.}
+
+\item{...}{ignored.}
 }
 \value{
 Returns an object of class \code{fv}, see spatstat for more details. Basically a list with the computed values and parameter values.
@@ -55,4 +57,3 @@ For \code{geometric} and \code{knn}, the calculations are done by shrinking the 
 
 For border correction, use \code{minusRange} for reduced border correction (for rectangular windows only). If using \code{geometric} or \code{knn} neighbourhoods, the option \code{toroidal} for toroidal correction is also available. The vector \code{included} can be given for more specific \code{minus}-correction, only those points with TRUE (or 1) value are used in calculation. However, the neighbourhoods will include all points.
 }
-

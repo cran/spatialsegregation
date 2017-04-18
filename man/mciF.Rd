@@ -24,4 +24,3 @@ Compute the Mean Composite Information for a given multitype point pattern. See 
 \references{
 Podani, Czaran: Individual-centered analysis of mapped point patterns representing multi-species assemblages. J. Veg. Sci. 8: 259-270, 1997.
 }
-

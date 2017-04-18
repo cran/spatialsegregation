@@ -46,7 +46,6 @@ dixon            -   Dixon's 2-type contingency table tests
 
 \author{
 Tuomas Rajala
-University of Jyvaskyla, Finland
 tuomas.rajala@iki.fi
 }
 \examples{

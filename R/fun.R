@@ -25,7 +25,7 @@ kGraphs<-c("geometric","knn","gabriel","delaunay","bgeometric")
 #' @param prepGraphIsTarget If TRUE, precalculated graph \code{prepGraph} is used to calculate a single function value directly, all other neighbourhood parameters are ignored.
 #' @param weightMatrix See \code{isarF} for this.
 #' @param translate Use translation correction (see e.g. documentation of \code{spatstat::Kest} for details). Used only in mingling index.
-#' 
+#' @param ... ignored.
 #' @details 
 #' This is the general function for computing the spatial exposure (segregation/mingling) features. Used by \link{minglingF}, \link{shannonF}, \link{simpsonF}, \link{isarF}, \link{mciF} and \link{biomassF}, which should be preferred for better (and nicer) outcome. 
 #' 
@@ -45,7 +45,7 @@ kGraphs<-c("geometric","knn","gabriel","delaunay","bgeometric")
 segregationFun<-function(X, fun="isar", r=NULL, ntype="geometric", funpars=NULL, 
 		                 toroidal=FALSE, minusRange=TRUE,  included=NULL, dbg=FALSE, 
 						 doDists=FALSE, prepRange=0.0, prepGraph=NULL, prepGraphIsTarget=FALSE, 
-						 weightMatrix=NULL, translate=FALSE)
+						 weightMatrix=NULL, translate=FALSE, ...)
 # function types:
 #	1 mingling
 #   2 shannon

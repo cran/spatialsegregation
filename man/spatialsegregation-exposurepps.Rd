@@ -20,7 +20,6 @@ package as an energy function of a Gibbs model.
 
 \author{
 Tuomas Rajala
-University of Jyvaskyla, Finland
 tuomas.rajala@iki.fi
 }
 

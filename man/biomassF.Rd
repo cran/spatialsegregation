@@ -23,4 +23,3 @@ Returns an \code{fv}-object, see \code{spatstat} for more information.
 \description{
 Compute the biomass around points as a function of spatial scale.
 }
-
