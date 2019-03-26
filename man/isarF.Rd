@@ -5,8 +5,8 @@
 \alias{isar.index}
 \title{Individual Species Area Relationship}
 \usage{
-isarF(X, r = NULL, target = NULL, v2 = FALSE, v3 = FALSE, v4 = FALSE,
-  ...)
+isarF(X, r = NULL, target = NULL, v2 = FALSE, v3 = FALSE,
+  v4 = FALSE, ...)
 
 isar.index(X, r = 4, ntype = "knn", ...)
 }

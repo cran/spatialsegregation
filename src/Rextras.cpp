@@ -58,7 +58,7 @@ SEXP vectorToSEXP(std::vector<std::vector<int> > nodelist)
 		PROTECT(*node = allocVector(INTSXP, nodelist[i].size() ) );
 		p = INTEGER(*node);
 		n = nodelist[i].size();
-		if(n<1) p[0]=NULL;
+		if(n<1) ;// p[0]=NULL;
 		else
 			for(j=0;j<n;j++)
 			{

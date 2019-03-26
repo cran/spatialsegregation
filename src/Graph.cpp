@@ -100,7 +100,7 @@ SEXP Graph::toSEXP()
 		PROTECT(*node = allocVector(INTSXP, this->nodelist[i].size()) );
 		p = INTEGER(*node);
 		n = (int) this->nodelist[i].size();
-		if(n<1) p[0]=NULL;
+		if(n<1) ;//p[0]=NULL;
 		else
 			for(j=0;j<n;j++)
 			{

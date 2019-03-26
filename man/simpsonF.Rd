@@ -3,7 +3,6 @@
 \name{simpsonF}
 \alias{simpsonF}
 \alias{simpson.index}
-\alias{simpson.index}
 \title{Spatial Simpson index}
 \usage{
 simpsonF(X, r = NULL, ...)
